@@ -11,11 +11,13 @@
 |
  */
 
-Route::get('/', function () {
-    return view('auth.login');
-    // return view('');
-});
+// Route::get('/', ['middleware' => 'guest', function () {
+//     return view('auth.login');
+// }]);
+Route::view('/', 'auth.login');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::resource('services', 'ServiceController');
+
+Route::get('/dashboard', 'HomeController@index')->name('home');

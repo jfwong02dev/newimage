@@ -62,7 +62,7 @@
 	* 'theme-{THEME NAME}'
 	* 'right-to-left'     - Sets text direction to right-to-left
 -->
-<body class="theme-default page-signin">
+<body class="theme-default page-signin" data-session="{{ session('status') ?? $errors->has('email') ?? '' }}">
 
 	<!-- Page background -->
 	<div id="page-signin-bg">
@@ -129,13 +129,24 @@
 						<div class="close">&times;</div>
 					</div> <!-- / .signin-text -->
 				</div> <!-- / .header -->
-				
+
 				<!-- Form -->
-				<form action="index.html" id="password-reset-form_id">
-					<div class="form-group w-icon">
-						<input type="text" name="password_reset_email" id="p_email_id" class="form-control input-lg" placeholder="Enter your email">
+				<form method="POST" action="{{ route('password.email') }}" id="password-reset-form_id" aria-label="{{ __('Reset Password') }}">
+					@csrf
+					<div class="form-group w-icon{{ session('status') ? ' has-success' : $errors->has('email') ? ' has-error' : '' }}">
+						<input type="text" name="email" id="email" class="form-control input-lg" placeholder="Enter your email">
 						<span class="fa fa-envelope signin-form-icon"></span>
 					</div> <!-- / Email -->
+
+					@if (session('status'))
+						<div class="has-success simple">
+							<p class="help-block">{{ session('status') }}</p>
+						</div>
+					@elseif ($errors->has('email'))
+						<div class="has-error simple">
+							<p class="help-block">{{ $errors->first('email') }}</p>
+						</div>
+                    @endif
 
 					<div class="form-actions">
 						<input type="submit" value="SEND PASSWORD RESET LINK" class="signin-btn bg-primary">
@@ -163,7 +174,15 @@
 <script src="{{ asset('js/pixel-admin.min.js') }}"></script>
 
 <script type="text/javascript">
-    var init=[]
+    var init=[];
+
+	if(document.body.dataset.session) {
+		init.push(function () {
+			$('#password-reset-form').fadeIn(400);
+			return false;
+		});
+	}
+
 	// Resize BG
 	init.push(function () {
 		var $ph  = $('#page-signin-bg'),
@@ -214,7 +233,7 @@
 		$("#password-reset-form_id").validate({ focusInvalid: true, errorPlacement: function () {} });
 		
 		// Validate email
-		$("#p_email_id").rules("add", {
+		$("#email").rules("add", {
 			required: true,
 			email: true
 		});
