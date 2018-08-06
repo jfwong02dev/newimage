@@ -14,7 +14,7 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $services = Service::all();
+        $services = Service::withTrashed()->get();
 
         return view('service.index', ['services' => $services]);
     }
@@ -38,14 +38,14 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|min:3',
+            'name' => 'required|unique:services|min:3',
         ]);
 
         Service::create([
             'name' => $request->name,
         ]);
 
-        session()->flash('added_service', 'You successfully added a new service.');
+        session()->flash('added_service', 'You successfully added a new service. Name: ' . $request->name);
 
         return redirect(route('services.index'));
     }
@@ -103,7 +103,17 @@ class ServiceController extends Controller
     {
         $service->delete();
 
-        session()->flash('delete_service', 'You successfully deleted a service, Name: ' . $service->name . '.');
+        session()->flash('deleted_service', 'You successfully deleted a service, Name: ' . $service->name . '.');
+
+        return redirect(route('services.index'));
+    }
+
+    public function restore($id)
+    {
+        $service = Service::onlyTrashed()->find($id);
+        $service->restore();
+
+        session()->flash('restored_service', 'You successfully restored a service, Name: ' . $service->name . '.');
 
         return redirect(route('services.index'));
     }

@@ -19,5 +19,6 @@ Route::view('/', 'auth.login');
 Auth::routes();
 
 Route::resource('services', 'ServiceController');
+Route::post('services/{id}', 'ServiceController@restore')->name('services.restore');
 
 Route::get('/dashboard', 'HomeController@index')->name('home');

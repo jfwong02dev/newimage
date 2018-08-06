@@ -53,6 +53,12 @@
 			<strong>SUCCESS! </strong> {{session()->get('deleted_service')}}
 		</div> <!-- / .alert -->
 		@endif
+		@if(session()->has('restored_service'))
+		<div class="alert alert-page alert-info">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+			<strong>SUCCESS! </strong> {{session()->get('restored_service')}}
+		</div> <!-- / .alert -->
+		@endif
 		<div class="panel-body">
 			<div class="table-primary">
 				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="jq-datatables-example">
@@ -73,12 +79,23 @@
 								<td>{{ $service->created_at }}</td>
 								<td>{{ $service->deleted_at ? 'Abandoned' : 'Active' }}</td>
 								<td>
+									@if($service->deleted_at)
+									<form style="display:inline-block;" onsubmit="return confirm('Are you sure you want to restore this record?')" method="post" action="{{route('services.restore', $service->id)}}">
+										@csrf
+										<button type="submit" class="btn btn-warning btn-sm">Restore</button>
+									</form>
+									@else
 									<!-- <a href="{{route('services.show', $service->id)}}" class="btn btn-info btn-sm">View</a>&nbsp; -->
-									<a href="{{route('services.edit', $service->id)}}" class="btn btn-success btn-sm">Edit</a>&nbsp;
-									<form style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this post?')" method="post" action="{{route('services.destroy', $service->id)}}">
+									<button rel="{{ $service }}" id="ui-bootbox-prompt" class="btn btn-success btn-sm">Edit</button>&nbsp;
+									<form style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this record?')" method="post" action="{{route('services.destroy', $service->id)}}">
 										@csrf
 										@method('delete')
 										<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+									</form>
+									@endif
+									<form style="display:inline-block;" name="edit-form" method="post" action="{{route('services.edit', $service->id)}}">
+										@csrf
+										<input type="hidden" name="name" value="{{ $service->name }}"/>
 									</form>
 								</td>
 							</tr>
@@ -96,6 +113,22 @@
 				$('#jq-datatables-example').dataTable();
 				// $('#jq-datatables-example_wrapper .table-caption').text('Some header text');
 				$('#jq-datatables-example_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
+
+				$('#ui-bootbox-prompt').on('click', function () {
+					var service = $(this).attr('rel');
+					console.log(service);
+					bootbox.prompt({
+						title: "Service ID: " + service.id,
+						callback: function(result) {
+							if (result === null) {
+								return false;
+							} else {
+								alert("Hi " + result + "!");
+							}
+						},
+						className: "bootbox-sm"
+					});
+				});
 			});
 		</script>
 		<!-- / Javascript -->
