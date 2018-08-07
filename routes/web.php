@@ -11,14 +11,16 @@
 |
  */
 
-// Route::get('/', ['middleware' => 'guest', function () {
-//     return view('auth.login');
-// }]);
-Route::view('/', 'auth.login');
+Route::get('/', ['middleware' => 'guest', function () {
+    return view('auth.login');
+}]);
 
 Auth::routes();
 
-Route::resource('services', 'ServiceController');
-Route::post('services/{id}', 'ServiceController@restore')->name('services.restore');
+Route::resource('services', 'ServiceController')->middleware('auth');
+Route::post('services/{id}', 'ServiceController@restore')->name('services.restore')->middleware('auth');
+
+Route::resource('products', 'ProductController')->middleware('auth');
+Route::post('products/{id}', 'ProductController@restore')->name('products.restore')->middleware('auth');;
 
 Route::get('/dashboard', 'HomeController@index')->name('home');

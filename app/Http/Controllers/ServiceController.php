@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +21,7 @@ class ServiceController extends Controller
     {
         $services = Service::withTrashed()->get();
 
-        return view('service.index', ['services' => $services]);
+        return view('services.index', ['services' => $services]);
     }
 
     /**
@@ -26,7 +31,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        return view('service.create');
+        //
     }
 
     /**
@@ -38,14 +43,14 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|unique:services|min:3',
+            'serviceName' => 'required|unique:services,name|min:3',
         ]);
 
         Service::create([
-            'name' => $request->name,
+            'name' => $request->serviceName,
         ]);
 
-        session()->flash('added_service', 'You successfully added a new service. Name: ' . $request->name);
+        session()->flash('added_service', 'You successfully added a new service. Name: ' . $request->serviceName);
 
         return redirect(route('services.index'));
     }
@@ -58,7 +63,7 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        return view('service.show', ['service' => $service]);
+        //
     }
 
     /**
@@ -69,7 +74,7 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        return view('service.show', compact($service));
+        //
     }
 
     /**
@@ -82,13 +87,13 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $this->validate($request, [
-            'name' => 'required|min:3|unique:services,name',
+            'editServiceName' => 'required|min:3|unique:services,name,' . $service->id,
         ]);
 
-        $service->name = $request->name;
+        $service->name = $request->editServiceName;
         $service->save();
 
-        session()->flash('updated_service', 'Service ID: ' . $service->id . ' has updated successfuly.');
+        session()->flash('updated_service', 'You successfully updated a service, ID: ' . $service->id . '.');
 
         return redirect(route('services.index'));
     }
