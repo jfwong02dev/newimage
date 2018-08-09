@@ -29,7 +29,7 @@
 					 Javascript: html/assets/demo/demo.js
 				 -->
 				<div>
-					<div class="text-bg"><span class="text-slim">Welcome,</span> <span class="text-semibold">{{Auth::user()->name}}</span></div>
+					<div class="text-bg"><span class="text-slim">Welcome,</span> <span class="text-semibold">{{Auth::user()->username}}</span></div>
 
 					<img src="{{ asset('demo/avatars/1.jpg') }}" alt="" class="">
 					<div class="btn-group">
@@ -50,6 +50,9 @@
 				</li>
 				<li>
 					<a href="{{ route('products.index') }}"><i class="menu-icon fa fa-shopping-cart"></i><span class="mm-text">Product</span></a>
+				</li>
+				<li>
+					<a href="{{ route('users.index') }}"><i class="menu-icon fa fa-users"></i><span class="mm-text">User</span></a>
 				</li>
 			</ul> <!-- / .navigation -->
 			<div class="menu-content">

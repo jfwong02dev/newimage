@@ -28,7 +28,7 @@
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle user-menu" data-toggle="dropdown">
 									<img src="{{ asset('demo/avatars/1.jpg') }}" alt="">
-									<span>{{Auth::user()->name}}</span>
+									<span>{{Auth::user()->username}}</span>
 								</a>
 								<ul class="dropdown-menu">
 									<li><a href="#"><span class="label label-warning pull-right">New</span>Profile</a></li>

@@ -146,6 +146,15 @@ return [
         'editServiceName' => 'Service Name',
         'productName' => 'Product Name',
         'editProductName' => 'Product Name',
+        'username' => 'Username',
+        'fullname' => 'Full Name',
+        'gender' => 'Gender',
+        'ic' => 'IC No',
+        'email' => 'Email',
+        'mobile' => 'Mobile',
+        'address' => 'Address',
+        'position' => 'Position',
+        'salary' => 'Salary',
     ],
 
 ];

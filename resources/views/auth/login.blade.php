@@ -104,8 +104,8 @@
 					<span>Sign In to your account</span>
 				</div> <!-- / .signin-text -->
 
-				<div class="form-group w-icon {{ $errors->has('name') ? 'has-error' : '' }}">
-					<input type="text" name="name" id="name" class="form-control input-lg" placeholder="Username">
+				<div class="form-group w-icon {{ $errors->has('username') ? 'has-error' : '' }}">
+					<input type="text" name="username" id="username" class="form-control input-lg" placeholder="Username">
 					<span class="fa fa-user signin-form-icon"></span>
 				</div> <!-- / Username -->
 
@@ -216,7 +216,7 @@
 		$("#signin-form_id").validate({ focusInvalid: true, errorPlacement: function () {} });
 		
 		// Validate username
-		$("#name").rules("add", {
+		$("#username").rules("add", {
 			required: true,
 			minlength: 3
 		});

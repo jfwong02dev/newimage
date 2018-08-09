@@ -17,6 +17,9 @@ Route::get('/', ['middleware' => 'guest', function () {
 
 Auth::routes();
 
+Route::resource('users', 'UserController')->middleware('auth');
+Route::post('users/{id}', 'UserController@restore')->name('users.restore')->middleware('auth');
+
 Route::resource('services', 'ServiceController')->middleware('auth');
 Route::post('services/{id}', 'ServiceController@restore')->name('services.restore')->middleware('auth');
 
