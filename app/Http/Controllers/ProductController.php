@@ -46,9 +46,12 @@ class ProductController extends Controller
             'productName' => 'required|unique:products,name|min:3',
         ]);
 
-        Product::create([
+        $product = Product::create([
             'name' => $request->productName,
         ]);
+
+        $product->code = 'PD' . $product->id;
+        $product->save();
 
         session()->flash('added_product', 'You successfully added a new product. Name: ' . $request->productName);
 

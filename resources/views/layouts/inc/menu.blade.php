@@ -46,17 +46,31 @@
 					<a href="{{ URL::to('/dashboard') }}"><i class="menu-icon fa fa-dashboard"></i><span class="mm-text">Dashboard</span></a>
 				</li>
 				<li>
-					<a href="{{ route('services.index') }}"><i class="menu-icon fa fa-leaf"></i><span class="mm-text">Service</span></a>
+					<a href="{{ route('sales.index') }}"><i class="menu-icon fa fa-tasks"></i><span class="mm-text">Sales</span></a>
 				</li>
-				<li>
-					<a href="{{ route('products.index') }}"><i class="menu-icon fa fa-shopping-cart"></i><span class="mm-text">Product</span></a>
-				</li>
-				<li>
-					<a href="{{ route('users.index') }}"><i class="menu-icon fa fa-users"></i><span class="mm-text">User</span></a>
+				<li class="mm-dropdown">
+					<a href="#"><i class="menu-icon fa fa-cogs"></i><span class="mm-text">Management</span></a>
+					<ul>
+						<li>
+							<a tabindex="-1" href="{{ route('sales.index') }}"><span class="mm-text">Sale</span></a>
+						</li>
+						<li>
+							<a tabindex="-1" href="{{ route('users.index') }}"><span class="mm-text">User</span></a>
+						</li>
+						<li>
+							<a tabindex="-1" href="{{ route('salaries.index') }}"><span class="mm-text">Salary Adjustment</span></a>
+						</li>
+						<li>
+							<a tabindex="-1" href="{{ route('services.index') }}"><span class="mm-text">Service</span></a>
+						</li>
+						<li>
+							<a tabindex="-1" href="{{ route('products.index') }}"><span class="mm-text">Product</span></a>
+						</li>
+					</ul>
 				</li>
 			</ul> <!-- / .navigation -->
 			<div class="menu-content">
-				<a href="pages-invoice.html" class="btn btn-primary btn-block btn-outline dark">Create Invoice</a>
+				<a href="{{ route('sales.create') }}" class="btn btn-primary btn-block btn-outline dark">Create Sale</a>
 			</div>
 		</div> <!-- / #main-menu-inner -->
 	</div> <!-- / #main-menu -->

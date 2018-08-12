@@ -155,6 +155,12 @@ return [
         'address' => 'Address',
         'position' => 'Position',
         'salary' => 'Salary',
+        'uid' => 'Username',
+        'type' => 'Type',
+        'subject' => 'Subject',
+        'amount' => 'Amount',
+        'remark' => 'Remark',
+        'cdate' => 'Date',
     ],
 
 ];

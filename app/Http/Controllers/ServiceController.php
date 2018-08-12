@@ -46,9 +46,12 @@ class ServiceController extends Controller
             'serviceName' => 'required|unique:services,name|min:3',
         ]);
 
-        Service::create([
+        $service = Service::create([
             'name' => $request->serviceName,
         ]);
+
+        $service->code = 'SV' . $service->id;
+        $service->save();
 
         session()->flash('added_service', 'You successfully added a new service. Name: ' . $request->serviceName);
 

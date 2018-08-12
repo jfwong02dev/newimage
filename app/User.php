@@ -29,6 +29,12 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public static $staff_no = 10000;
+
+    public static $staff_codes = [
+        100, 200, 300
+    ];
+
     public static $code_to_position = [
         100 => 'director',
         200 => 'assistant',

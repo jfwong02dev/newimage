@@ -25,7 +25,9 @@ class UserController extends Controller
     {
         $users = User::withTrashed()->get();
 
-        return view('users.index', ['users' => $users]);
+        return view('users.index', [
+            'users' => $users
+        ]);
     }
 
     /**
@@ -37,7 +39,6 @@ class UserController extends Controller
     {
         $faker = Faker::create();
         return view('users.create', [
-            'position' => $this->_position,
             'faker' => [
                 'username' => $faker->firstName,
                 'fullname' => $faker->name,
@@ -84,7 +85,7 @@ class UserController extends Controller
             'salary' => $request->salary,
         ]);
 
-        $user->uid = 10000 + $user->id;
+        $user->uid = User::$staff_no + $user->id;
         $user->save();
 
         session()->flash('added_user', 'You successfully added a new user. Name: ' . $request->username);
@@ -100,7 +101,10 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        dd($user);
+        return view('users.show', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -111,7 +115,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return view('users.edit', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -124,10 +130,26 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $this->validate($request, [
-            'editServiceName' => 'required|min:3|unique:services,name,' . $user->id,
+            'username' => 'required|unique:users,username,' . $user->id,
+            'fullname' => 'required',
+            'gender' => 'required|in:m,f',
+            'ic' => 'required|unique:users,ic,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'mobile' => 'required',
+            'address' => 'required',
+            'position' => 'required|in:' . implode(',', User::$position_to_code),
+            'salary' => 'required|numeric',
         ]);
 
-        $user->name = $request->editServiceName;
+        $user->username = $request->username;
+        $user->fullname = $request->fullname;
+        $user->gender = $request->gender;
+        $user->ic = $request->ic;
+        $user->email = $request->email;
+        $user->mobile = $request->mobile;
+        $user->address = $request->address;
+        $user->position = $request->position;
+        $user->salary = $request->salary;
         $user->save();
 
         session()->flash('updated_user', 'You successfully updated a user, ID: ' . $user->id . '.');

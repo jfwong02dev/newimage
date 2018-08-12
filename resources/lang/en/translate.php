@@ -66,6 +66,8 @@ return [
 	'button/generate' => 'Generate',
 	
 	// Field
+	'field/credit' => 'Credit',
+	'field/debit' => 'Debit',
 	'field/service' => 'Service',
 	'field/code' => 'Code',
 	'field/username' => 'Username',
@@ -137,6 +139,7 @@ return [
 	// Amendments Subject
 	'amendment-subject/bonus' => "Bonus",
 	'amendment-subject/ot' => "Over Time",
+	'amendment-subject/allowance' => "Allowance",
 	'amendment-subject/consumption' => "Consumption",
 	'amendment-subject/unpaid' => "Unpaid",
 	'amendment-subject/advance' => "Advance",
