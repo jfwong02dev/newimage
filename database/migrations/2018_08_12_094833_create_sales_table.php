@@ -20,7 +20,7 @@ class CreateSalesTable extends Migration
             $table->string('product')->nullable();
             $table->double('amount', 8, 2);
             $table->integer('comm');
-            $table->text('remark');
+            $table->text('remark')->nullable();
             $table->date('cdate');
             $table->timestamps();
             $table->softDeletes();
