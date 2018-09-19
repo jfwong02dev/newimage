@@ -1,11 +1,43 @@
 @extends('layouts.master')
-@section('title', 'Salary Management')
+@section('title', __('translate.pagetitle/salary-management'))
 @section('content')
+
 	<div class="panel">
 		<div class="panel-heading">
 			<div class="row">
-				<div class="pull-right col-xs-12 col-sm-auto"><a href="{{ route('salaries.create') }}" class="btn btn-primary btn-labeled"><span class="btn-label icon fa fa-plus"></span>New Adjustment</a></div>
-				<span class="panel-title"><i class="panel-title-icon fa fa-list-ul"></i>Salary Adjustment Listing</span>
+				<span class="panel-title"><i class="panel-title-icon fa fa-search"></i>{{ __('translate.general/search-panel') }}</span>
+			</div>
+		</div>
+		<div class="panel-body">
+			<form action="{{route('salaries.search')}}" method="post" name="search-form">
+				@csrf
+				<div class="form-group">
+					<label for="daterange" class="col-sm-2 control-label">{{ __('translate.field/date') }}</label>
+					<div class="col-sm-10">
+						<div class="input-daterange input-group" id="bs-datepicker-range">
+							<input type="text" class="input-sm form-control" name="from_date" value="{{ $search_fields['from_date']['value'] ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/start-date') }}" required>
+							<span class="input-group-addon">to</span>
+							<input type="text" class="input-sm form-control" name="to_date" value="{{ $search_fields['to_date']['value'] ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/end-date') }}" required>
+						</div>
+					</div>
+				</div>
+				<div class="form-group" style="margin-bottom: 0;">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-primary pull-right">{{ __('translate.button/search') }}</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="panel">
+		<div class="panel-heading">
+			<div class="row">
+				<div class="pull-right col-xs-12 col-sm-auto"><a href="{{ route('salaries.create') }}" class="btn btn-primary btn-labeled"><span class="btn-label icon fa fa-plus"></span>{{__('translate.pagetitle/new-adjustment')}}</a></div>
+				@if($search)
+					<span class="pull-right">{{ __('translate.message/record-found', ['number' => count($adjustments)])}}   <a href="{{ route('salaries.index') }}">{{ __('translate.button/clear') }}</a></span>
+				@endif
+				<span class="panel-title"><i class="panel-title-icon fa fa-list-ul"></i>{{__('translate.listing/salary-amendment')}}</span>
 			</div>
 		</div>
 		@if(session()->has('added_adjustment'))
@@ -34,15 +66,15 @@
 		@endif
 		<div class="panel-body">
 			<div class="table-primary">
-				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="jq-datatables-example">
+				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="adjustment-datatables">
 					<thead>
 						<tr>
-							<th>ID</th>
-							<th>Username</th>
-							<th>Subject</th>
-							<th>Amount</th>
-							<th>Date</th>
-							<th>Action</th>
+							<th>{{__('translate.field/id')}}</th>
+							<th>{{__('translate.field/username')}}</th>
+							<th>{{__('translate.field/subject')}}</th>
+							<th>{{__('translate.field/amount')}}</th>
+							<th>{{__('translate.field/date')}}</th>
+							<th>{{__('translate.field/action')}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -57,19 +89,24 @@
 								</td>
 								<td>{{ $adjustment->cdate }}</td>
 								<td>
-									@if($adjustment->deleted_at)
+									@if($adjustment->user->deleted_at)
+									<span class="label label-info">{{__('translate.notification/is-deleted-user', ['username' => $adjustment->user->username])}}</span>
+										@if($adjustment->deleted_at)
+										<span class="label label-danger">{{__('translate.status/deleted')}}</span>
+										@endif
+									@elseif($adjustment->deleted_at)
 									<form style="display:inline-block;" name="restore-form" rel="{{ $adjustment }}" method="post" action="{{route('salaries.restore', $adjustment->id)}}">
 										@csrf
-										<button class="btn btn-warning btn-labeled btn-sm"><span class="btn-label icon fa fa-undo"></span>Restore</button>
+										<button class="btn btn-warning btn-labeled btn-sm"><span class="btn-label icon fa fa-undo"></span>{{__('translate.button/restore')}}</button>
 									</form>
 									@else
 									<a href="{{ route('salaries.edit', $adjustment->id) }}" class="btn btn-success btn-labeled btn-sm">
-										<span class="btn-label icon fa fa-edit"></span>Edit
+										<span class="btn-label icon fa fa-edit"></span>{{__('translate.button/edit')}}
 									</a>
 									<form style="display:inline-block;" name="delete-form" rel="{{ $adjustment }}" method="post" action="{{route('salaries.destroy', $adjustment->id)}}">
 										@csrf
 										@method('delete')
-										<button class="btn btn-danger btn-labeled btn-sm"><span class="btn-label icon fa fa-trash-o"></span>Delete</button>
+										<button class="btn btn-danger btn-labeled btn-sm"><span class="btn-label icon fa fa-trash-o"></span>{{__('translate.button/delete')}}</button>
 									</form>
 									@endif
 								</td>
@@ -85,11 +122,11 @@
 		
 		<script>
 			init.push(function () {
-				$('#jq-datatables-example').dataTable();
+				$('#adjustment-datatables').dataTable();
 				// $('#jq-datatables-example_wrapper .table-caption').text('Some header text');
-				$('#jq-datatables-example_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
+				$('#adjustment-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
 
-				$('#jq-datatables-example').on('click', '[name=delete-form]', function () {
+				$('#adjustment-datatables').on('click', '[name=delete-form]', function () {
 					event.preventDefault();
 					var delete_form = $(this);
 					var delete_adjustment = JSON.parse(delete_form.attr('rel'));
@@ -104,7 +141,7 @@
 					});
 				});
 
-				$('#jq-datatables-example').on('click', '[name=restore-form]', function () {
+				$('#adjustment-datatables').on('click', '[name=restore-form]', function () {
 					event.preventDefault();
 					var restore_form = $(this);
 					var restore_adjustment = JSON.parse(restore_form.attr('rel'));
@@ -117,6 +154,11 @@
 						},
 						className: "bootbox-sm"
 					});
+				});
+
+				$('#bs-datepicker-range').datepicker({
+					todayBtn:'linked',
+					format:'yyyy-mm-dd',
 				});
 			});
 		</script>

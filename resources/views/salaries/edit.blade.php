@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Edit Adjustment')
+@section('title', __('translate.pagetitle/edit-adjustment'))
 @section('content')
 	<!-- @if($errors->all())
 		@foreach($errors->all() as $error)
@@ -10,14 +10,14 @@
 		<div class="col-sm-12">
 			<div class="panel">
 				<div class="panel-heading">
-					<span class="panel-title">Edit Adjustment</span>
+					<span class="panel-title"><i class="panel-title-icon fa fa-edit"></i>{{__('translate.pagetitle/edit-adjustment')}}</span>
 				</div>
 				<div class="panel-body">
 					<form action="{{route('salaries.update', $adjustment->id)}}" method="post" class="form-horizontal">
 					@csrf
 					@method('put')
 						<div class="form-group{{ $errors->has('uid') ? ' has-error' : '' }}">
-							<label for="uid" class="col-sm-3 control-label">Username</label>
+							<label for="uid" class="col-sm-3 control-label">{{__('translate.field/username')}}</label>
 							<div class="col-sm-9">
 								<select class="form-control" name="uid" id="uid">
 									<option></option>
@@ -32,18 +32,18 @@
 						</div>
 
 						<div class="form-group{{ $errors->has('type') ? ' has-error' : '' }}">
-							<label class="col-sm-3 control-label">Type</label>
+							<label class="col-sm-3 control-label">{{__('translate.field/type')}}</label>
 							<div class="col-sm-9">
 								<div class="radio">
 									<label>
 										<input type="radio" name="type" value="c" class="px" {{ (old('type') ?? $adjustment->type ?? '') === 'c' ? 'checked' : '' }} />
-										<span class="lbl">Credit</span>
+										<span class="lbl">{{__('translate.field/credit')}}</span>
 									</label>
 								</div>
 								<div class="radio">
 									<label>
 										<input type="radio" name="type" value="d" class="px" {{ (old('type') ?? $adjustment->type ?? '') === 'd' ? 'checked' : '' }} />
-										<span class="lbl">Debit</span>
+										<span class="lbl">{{__('translate.field/debit')}}</span>
 									</label>
 								</div>
 								@if($errors->has('type'))
@@ -53,7 +53,7 @@
 						</div>
 
 						<div class="form-group{{ $errors->has('subject') ? ' has-error' : '' }}">
-							<label for="subject" class="col-sm-3 control-label">Subject</label>
+							<label for="subject" class="col-sm-3 control-label">{{__('translate.field/subject')}}</label>
 							<div class="col-sm-9">
 								<div id="subject-select">
 								<select class="form-control" name="subject" id="subject">
@@ -67,9 +67,9 @@
 						</div>
 
 						<div class="form-group{{ $errors->has('amount') ? ' has-error' : '' }}">
-							<label for="amount" class="col-sm-3 control-label">Amount</label>
+							<label for="amount" class="col-sm-3 control-label">{{__('translate.field/amount')}}</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" id="amount" name="amount" value="{{ old('amount') ?? $adjustment->amount ?? '' }}" placeholder="Amount">
+								<input type="text" class="form-control" id="amount" name="amount" value="{{ old('amount') ?? $adjustment->amount ?? '' }}" placeholder="{{__('translate.placeholder/amount')}}" autocomplete="off">
 								@if($errors->has('amount'))
 									<p class="help-block">{{$errors->first('amount')}}</p>
 								@endif
@@ -77,7 +77,7 @@
 						</div>
 
 						<div class="form-group{{ $errors->has('remark') ? ' has-error' : '' }}">
-							<label for="remark" class="col-sm-3 control-label">Remark</label>
+							<label for="remark" class="col-sm-3 control-label">{{__('translate.field/remark')}}</label>
 							<div class="col-sm-9">
 								<textarea class="form-control" id="remark" name="remark">{{ old('remark') ?? $adjustment->remark ?? '' }}</textarea>
 								@if($errors->has('remark'))
@@ -87,10 +87,10 @@
 						</div>
 
 						<div class="form-group{{ $errors->has('cdate') ? ' has-error' : '' }}">
-							<label for="cdate" class="col-sm-3 control-label">Date</label>
+							<label for="cdate" class="col-sm-3 control-label">{{__('translate.field/date')}}</label>
 							<div class="col-sm-9">
 								<div class="input-group date" id="cdate">
-									<input type="text" name="cdate" class="form-control" value="{{ old('cdate') ?? $adjustment->cdate ?? '' }}"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+									<input type="text" name="cdate" class="form-control" value="{{ old('cdate') ?? $adjustment->cdate ?? '' }}" autocomplete="off"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 								</div>
 								@if($errors->has('cdate'))
 									<p class="help-block">{{$errors->first('cdate')}}</p>
@@ -100,7 +100,7 @@
 
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-primary">Update</button>
+								<button type="submit" class="btn btn-primary">{{__('translate.button/update')}}</button>
 							</div>
 						</div>
 					</form>

@@ -1,11 +1,11 @@
 @extends('layouts.master')
-@section('title', 'Sales Management')
+@section('title', __('translate.pagetitle/sales'))
 @section('content')
 	<div class="panel">
 		<div class="panel-heading">
 			<div class="row">
-				<div class="pull-right col-xs-12 col-sm-auto"><a href="{{ route('sales.create') }}" class="btn btn-primary btn-labeled"><span class="btn-label icon fa fa-plus"></span>New Sale</a></div>
-				<span class="panel-title"><i class="panel-title-icon fa fa-list-ul"></i>Sales Listing</span>
+				<div class="pull-right col-xs-12 col-sm-auto"><a href="{{ route('sales.create') }}" class="btn btn-primary btn-labeled"><span class="btn-label icon fa fa-plus"></span>{{__('translate.pagetitle/new-sales')}}</a></div>
+				<span class="panel-title"><i class="panel-title-icon fa fa-list-ul"></i>{{__('translate.listing/sales')}}</span>
 			</div>
 		</div>
 		@if(session()->has('added_sale'))
@@ -34,15 +34,16 @@
 		@endif
 		<div class="panel-body">
 			<div class="table-primary">
-				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="jq-datatables-example">
+				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="sales-datatables">
 					<thead>
 						<tr>
-							<th>ID</th>
-							<th>Username</th>
-							<th>Sales</th>
-							<th>Amount</th>
-							<th>Date</th>
-							<th>Action</th>
+							<th>{{__('translate.field/id')}}</th>
+							<th>{{__('translate.field/username')}}</th>
+							<th>{{__('translate.field/sales')}}</th>
+							<th>{{__('translate.field/amount')}}</th>
+							<th>{{__('translate.field/commission')}}</th>
+							<th>{{__('translate.field/date')}}</th>
+							<th>{{__('translate.field/action')}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -64,22 +65,30 @@
 										@endif -->
 									@endfor
 								</td>
-								<td>{{ $sale->amount }}</td>
+								<td>{{ $sale->amount }}
+									@if($sale->pamount > 0)
+									<i class="fa fa-info-circle sales-details" data-toggle="tooltip" data-placement="right" title="{{__('translate.tooltip/sales-details', [
+										'service_amount' => $sale->amount - $sale->pamount ,
+										'product_amount' => $sale->pamount
+									])}}"></i>
+									@endif
+								</td>
+								<td>{{ $sale->comm }}</td>
 								<td>{{ $sale->cdate }}</td>
 								<td>
 									@if($sale->deleted_at)
 									<form style="display:inline-block;" name="restore-form" rel="{{ $sale }}" method="post" action="{{route('sales.restore', $sale->id)}}">
 										@csrf
-										<button class="btn btn-warning btn-labeled btn-sm"><span class="btn-label icon fa fa-undo"></span>Restore</button>
+										<button class="btn btn-warning btn-labeled btn-sm"><span class="btn-label icon fa fa-undo"></span>{{__('translate.button/restore')}}</button>
 									</form>
 									@else
 									<a href="{{ route('sales.edit', $sale->id) }}" class="btn btn-success btn-labeled btn-sm">
-										<span class="btn-label icon fa fa-edit"></span>Edit
+										<span class="btn-label icon fa fa-edit"></span>{{__('translate.button/edit')}}
 									</a>
 									<form style="display:inline-block;" name="delete-form" rel="{{ $sale }}" method="post" action="{{route('sales.destroy', $sale->id)}}">
 										@csrf
 										@method('delete')
-										<button class="btn btn-danger btn-labeled btn-sm"><span class="btn-label icon fa fa-trash-o"></span>Delete</button>
+										<button class="btn btn-danger btn-labeled btn-sm"><span class="btn-label icon fa fa-trash-o"></span>{{__('translate.button/delete')}}</button>
 									</form>
 									@endif
 								</td>
@@ -95,11 +104,10 @@
 		
 		<script>
 			init.push(function () {
-				$('#jq-datatables-example').dataTable();
-				// $('#jq-datatables-example_wrapper .table-caption').text('Some header text');
-				$('#jq-datatables-example_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
+				$('#sales-datatables').dataTable();
+				$('#sales-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
 
-				$('#jq-datatables-example').on('click', '[name=delete-form]', function () {
+				$('#sales-datatables').on('click', '[name=delete-form]', function () {
 					event.preventDefault();
 					var delete_form = $(this);
 					var delete_sale = JSON.parse(delete_form.attr('rel'));
@@ -114,7 +122,7 @@
 					});
 				});
 
-				$('#jq-datatables-example').on('click', '[name=restore-form]', function () {
+				$('#sales-datatables').on('click', '[name=restore-form]', function () {
 					event.preventDefault();
 					var restore_form = $(this);
 					var restore_sale = JSON.parse(restore_form.attr('rel'));
@@ -128,6 +136,8 @@
 						className: "bootbox-sm"
 					});
 				});
+
+				$('.sales-details').tooltip();
 			});
 		</script>
 		<!-- / Javascript -->

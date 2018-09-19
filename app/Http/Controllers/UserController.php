@@ -23,7 +23,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::withTrashed()->get();
+        $users = User::withTrashed()
+            ->where('uid', '!=', 10001)
+            ->get();
 
         return view('users.index', [
             'users' => $users
@@ -40,15 +42,15 @@ class UserController extends Controller
         $faker = Faker::create();
         return view('users.create', [
             'faker' => [
-                'username' => $faker->firstName,
-                'fullname' => $faker->name,
-                'gender' => $faker->randomElement(['m', 'f']),
-                'ic' => $faker->e164PhoneNumber,
-                'email' => $faker->email,
-                'mobile' => $faker->phoneNumber,
-                'address' => $faker->address,
-                'position' => $faker->randomElement(array_keys($this->_position)),
-                'salary' => $faker->numberBetween(1000, 3000),
+                // 'username' => $faker->firstName,
+                // 'fullname' => $faker->name,
+                // 'gender' => $faker->randomElement(['m', 'f']),
+                // 'ic' => $faker->e164PhoneNumber,
+                // 'email' => $faker->email,
+                // 'mobile' => $faker->phoneNumber,
+                // 'address' => $faker->address,
+                // 'position' => $faker->randomElement(array_keys($this->_position)),
+                // 'salary' => $faker->numberBetween(1000, 3000),
             ],
         ]);
     }
@@ -88,7 +90,7 @@ class UserController extends Controller
         $user->uid = User::$staff_no + $user->id;
         $user->save();
 
-        session()->flash('added_user', 'You successfully added a new user. Name: ' . $request->username);
+        session()->flash('added_user', 'You successfully added a new user. Username: ' . $request->username);
 
         return redirect(route('users.index'));
     }
@@ -101,7 +103,6 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        dd($user);
         return view('users.show', [
             'user' => $user
         ]);
@@ -152,7 +153,7 @@ class UserController extends Controller
         $user->salary = $request->salary;
         $user->save();
 
-        session()->flash('updated_user', 'You successfully updated a user, ID: ' . $user->id . '.');
+        session()->flash('updated_user', 'You successfully updated a user, UID: ' . $user->uid . '.');
 
         return redirect(route('users.index'));
     }
@@ -167,7 +168,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        session()->flash('deleted_user', 'You successfully deleted a user, Name: ' . $user->username . '.');
+        session()->flash('deleted_user', 'You successfully deleted a user, Username: ' . $user->username . '.');
 
         return redirect(route('users.index'));
     }
@@ -177,7 +178,7 @@ class UserController extends Controller
         $user = User::onlyTrashed()->find($id);
         $user->restore();
 
-        session()->flash('restored_user', 'You successfully restored a user, Name: ' . $user->username . '.');
+        session()->flash('restored_user', 'You successfully restored a user, Username: ' . $user->username . '.');
 
         return redirect(route('users.index'));
     }

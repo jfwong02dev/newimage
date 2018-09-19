@@ -16,7 +16,7 @@ class Sale extends Model
      */
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['uid', 'service', 'product', 'amount', 'comm', 'remark', 'cdate'];
+    protected $fillable = ['uid', 'service', 'product', 'pamount', 'amount', 'comm', 'remark', 'cdate'];
 
     public static $comm_types = [10, 20]; // commission percentages
 

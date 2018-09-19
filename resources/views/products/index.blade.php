@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Products')
+@section('title', __('translate.pagetitle/product'))
 @section('content')
 
 	<div class="row">
@@ -7,7 +7,7 @@
 			<form action="{{route('products.store')}}" method="post" class="panel form-horizontal">
 				@csrf
 				<div class="panel-heading">
-					<span class="panel-title"><i class="panel-title-icon fa fa-plus"></i>New Product</span>
+					<span class="panel-title"><i class="panel-title-icon fa fa-plus"></i>{{__('translate.pagetitle/new-product')}}</span>
 				</div>
 
 				@if(session()->has('added_product'))
@@ -25,14 +25,14 @@
 
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="productName" class="col-sm-2 control-label">Product Name</label>
+						<label for="productName" class="col-sm-2 control-label">{{__('translate.field/product-name')}}</label>
 						<div class="col-sm-10{{$errors->has('productName') ? ' has-error' : ''}}">
-							<input type="text" class="form-control" id="productName" name="productName" placeholder="Product Name">
+							<input type="text" class="form-control" id="productName" name="productName" placeholder="{{__('translate.placeholder/product-name')}}" autocomplete="off">
 						</div>
 					</div> <!-- / .form-group -->
 					<div class="form-group" style="margin-bottom: 0;">
 						<div class="col-sm-offset-2 col-sm-10">
-							<button type="submit" class="btn btn-primary">Create</button>
+							<button type="submit" class="btn btn-primary">{{__('translate.button/create')}}</button>
 						</div>
 					</div> <!-- / .form-group -->
 				</div>
@@ -42,7 +42,7 @@
 
 	<div class="panel">
 		<div class="panel-heading">
-			<span class="panel-title"><i class="panel-title-icon fa fa-list-ul"></i>Product Listing</span>
+			<span class="panel-title"><i class="panel-title-icon fa fa-list-ul"></i>{{__('translate.listing/product')}}</span>
 		</div>
 		@if(session()->has('updated_product'))
 		<div class="alert alert-page alert-success">
@@ -70,14 +70,14 @@
 		@endif
 		<div class="panel-body">
 			<div class="table-primary">
-				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="jq-datatables-example">
+				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="product-datatables">
 					<thead>
 						<tr>
-							<th>ID</th>
-							<th>Product Name</th>
-							<th>Created Date</th>
-							<th>Status</th>
-							<th>Action</th>
+							<th>{{__('translate.field/id')}}</th>
+							<th>{{__('translate.field/product-name')}}</th>
+							<th>{{__('translate.field/cdate')}}</th>
+							<th>{{__('translate.field/status')}}</th>
+							<th>{{__('translate.field/action')}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -86,24 +86,24 @@
 								<td>{{ $product->id }}</td>
 								<td>{{ $product->name }}</td>
 								<td>{{ $product->created_at }}</td>
-								<td>{{ $product->deleted_at ? 'Abandoned' : 'Active' }}</td>
+								<td>{{ $product->deleted_at ? __('translate.status/abandoned') : __('translate.status/active') }}</td>
 								<td>
 									@if($product->deleted_at)
 									<form style="display:inline-block;" name="restore-form" rel="{{ $product }}" method="post" action="{{route('products.restore', $product->id)}}">
 										@csrf
-										<button class="btn btn-warning btn-labeled btn-sm"><span class="btn-label icon fa fa-undo"></span>Restore</button>
+										<button class="btn btn-warning btn-labeled btn-sm"><span class="btn-label icon fa fa-undo"></span>{{__('translate.button/restore')}}</button>
 									</form>
 									@else
 									<form style="display:inline-block;" name="edit-form" rel="{{ $product }}" method="post" action="{{route('products.update', $product->id)}}">
 										@csrf
 										@method('put')
 										<input type="hidden" id="edit-form-{{$product->id}}" name="editProductName" value="{{ $product->name }}"/>
-										<button class="btn btn-success btn-labeled btn-sm"><span class="btn-label icon fa fa-edit"></span>Edit</button>
+										<button class="btn btn-success btn-labeled btn-sm"><span class="btn-label icon fa fa-edit"></span>{{__('translate.button/edit')}}</button>
 									</form>
 									<form style="display:inline-block;" name="delete-form" rel="{{ $product }}" method="post" action="{{route('products.destroy', $product->id)}}">
 										@csrf
 										@method('delete')
-										<button class="btn btn-danger btn-labeled btn-sm"><span class="btn-label icon fa fa-trash-o"></span>Delete</button>
+										<button class="btn btn-danger btn-labeled btn-sm"><span class="btn-label icon fa fa-trash-o"></span>{{__('translate.button/delete')}}</button>
 									</form>
 									@endif
 								</td>
@@ -119,11 +119,10 @@
 		
 		<script>
 			init.push(function () {
-				$('#jq-datatables-example').dataTable();
-				// $('#jq-datatables-example_wrapper .table-caption').text('Some header text');
-				$('#jq-datatables-example_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
+				$('#product-datatables').dataTable();
+				$('#product-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
 
-				$('#jq-datatables-example').on('click', '[name=edit-form]', function () {
+				$('#product-datatables').on('click', '[name=edit-form]', function () {
 					event.preventDefault();
 					var edit_form = $(this);
 					var edit_product = JSON.parse(edit_form.attr('rel'));
@@ -141,7 +140,7 @@
 					});
 				});
 
-				$('#jq-datatables-example').on('click', '[name=delete-form]', function () {
+				$('#product-datatables').on('click', '[name=delete-form]', function () {
 					event.preventDefault();
 					var delete_form = $(this);
 					var delete_product = JSON.parse(delete_form.attr('rel'));
@@ -156,7 +155,7 @@
 					});
 				});
 
-				$('#jq-datatables-example').on('click', '[name=restore-form]', function () {
+				$('#product-datatables').on('click', '[name=restore-form]', function () {
 					event.preventDefault();
 					var restore_form = $(this);
 					var restore_product = JSON.parse(restore_form.attr('rel'));

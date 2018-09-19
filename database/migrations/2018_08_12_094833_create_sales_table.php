@@ -19,6 +19,7 @@ class CreateSalesTable extends Migration
             $table->string('service')->nullable();
             $table->string('product')->nullable();
             $table->double('amount', 8, 2);
+            $table->double('pamount', 8, 2);
             $table->integer('comm');
             $table->text('remark')->nullable();
             $table->date('cdate');

@@ -6,12 +6,17 @@ use App\User;
 use App\Salary;
 use Illuminate\Http\Request;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
 class SalaryController extends Controller
 {
     protected $_users;
     protected $_userIDs;
     protected $_subject_of_type;
+
+    protected $_search_fields = [
+        'from_date', 'to_date',
+    ];
 
     public function __construct()
     {
@@ -38,12 +43,35 @@ class SalaryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($whereq = [])
     {
-        $salary = Salary::withTrashed()->get();
+        foreach ($this->_search_fields as $field) {
+            if (in_array($field, array('from_date', 'to_date'))) {
+                $type = 'date';
+            } else {
+                $type = 'text';
+            }
+
+            $value = !empty($_POST[$field]) ? $_POST[$field] : '';
+
+
+            $this->_fields[$field]['name'] = $field;
+            $this->_fields[$field]['type'] = $type;
+            $this->_fields[$field]['value'] = $value;
+        }
+
+        $salary = Salary::withTrashed();
+
+        if ($whereq) {
+            $salary->whereBetween('cdate', $whereq);
+        }
+
+        $adjustments = $salary->get();
 
         return view('salaries.index', [
-            'adjustments' => $salary
+            'adjustments' => $adjustments,
+            'search' => strpos($_SERVER['REQUEST_URI'], 'search') ? true : false,
+            'search_fields' => $this->_fields,
         ]);
     }
 
@@ -60,12 +88,12 @@ class SalaryController extends Controller
             'users' => $this->_users,
             'subject_of_type' => $this->_subject_of_type,
             'faker' => [
-                'uid' => $faker->randomElement(array_column($this->_users->toArray(), 'uid')),
-                'type' => $faker->randomElement(['c', 'd']),
-                'subject' => $faker->randomElement([10, 20, 30, 50, 60, 70]),
-                'amount' => $faker->numberBetween(50, 200),
-                'remark' => $faker->sentence(),
-                'cdate' => $faker->date(),
+                // 'uid' => $faker->randomElement(array_column($this->_users->toArray(), 'uid')),
+                // 'type' => $faker->randomElement(['c', 'd']),
+                // 'subject' => $faker->randomElement([10, 20, 30, 50, 60, 70]),
+                // 'amount' => $faker->numberBetween(50, 200),
+                // 'remark' => $faker->sentence(),
+                // 'cdate' => $faker->date(),
             ],
         ]);
     }
@@ -96,9 +124,12 @@ class SalaryController extends Controller
             'cdate' => $request->cdate,
         ]);
 
-        session()->flash('added_adjustment', 'You successfully added a new adjustment. Name: ' . $request->uid . ', Amount: ' . $request->amount);
+        $user = User::where('uid', '=', $salary->uid)->firstOrFail();
 
-        return redirect(route('salaries.index'));
+        session()->flash('added_adjustment', 'You successfully added a new adjustment. Username: ' . $user->username . ', Amount: RM ' . $request->amount);
+
+        return redirect(route('salaries.create'));
+        // return redirect(route('salaries.index'));
     }
 
     /**
@@ -153,7 +184,9 @@ class SalaryController extends Controller
         $salary->cdate = $request->cdate;
         $salary->save();
 
-        session()->flash('updated_adjustment', 'You successfully updated a adjustment, ID: ' . $salary->id . '.');
+        $user = User::where('uid', '=', $salary->uid)->firstOrFail();
+
+        session()->flash('updated_adjustment', 'You successfully updated a adjustment. ID: ' . $salary->id . ', Username: ' . $user->username . ', Amount: RM ' . $salary->amount);
 
         return redirect(route('salaries.index'));
     }
@@ -168,18 +201,227 @@ class SalaryController extends Controller
     {
         $salary->delete();
 
-        session()->flash('deleted_adjustment', 'You successfully deleted a adjustment, Name: ' . $salary->id . '.');
+        $user = User::where('uid', '=', $salary->uid)->firstOrFail();
+
+        session()->flash('deleted_adjustment', 'You successfully deleted a adjustment. ID: ' . $salary->id . ', Username: ' . $user->username . ', Amount: RM ' . $salary->amount);
 
         return redirect(route('salaries.index'));
     }
 
     public function restore($id)
     {
+        dd($id);
         $salary = Salary::onlyTrashed()->find($id);
         $salary->restore();
 
-        session()->flash('restored_adjustment', 'You successfully restored a adjustment, Name: ' . $salary->id . '.');
+        $user = User::where('uid', '=', $salary->uid)->firstOrFail();
+
+        session()->flash('restored_adjustment', 'You successfully restored a adjustment. ID: ' . $salary->id . ', Username: ' . $user->username . ', Amount: RM ' . $salary->amount);
 
         return redirect(route('salaries.index'));
+    }
+
+    public function payslipForm()
+    {
+        $results = DB::table('sales')
+            ->select(DB::raw("
+                DISTINCT uid,
+                DATE_FORMAT(cdate, '%Y-%m-01') AS month
+                "))
+            ->whereNull('deleted_at')
+            ->orderBy('uid', 'asc')
+            ->orderBy('month', 'desc')
+            ->get()
+            ->toArray();
+
+        $individual_months = [];
+
+        foreach ($results as $key => $record) {
+            $individual_months[$record->uid][] = $record->month;
+        }
+
+        return view('payslips.index', [
+            'users' => $this->_users,
+            'individual_months' => $individual_months,
+        ]);
+    }
+
+    public function payslipPrint(Request $request)
+    {
+        $data = json_decode($request->summary);
+
+        return view('payslips.print', [
+            'subject_types' => json_decode($request->subject_types, true),
+            'user' => json_decode($request->user),
+            'adjustments' => json_decode($request->adjustments, true),
+            'epf_employer' => json_decode($request->epf_employer),
+            'epf_employee' => json_decode($request->epf_employee),
+            'total_addition' => json_decode($request->total_addition),
+            'total_deduction' => json_decode($request->total_deduction),
+            'gross_pay' => json_decode($request->gross_pay),
+            'net_total' => json_decode($request->net_total),
+            'comm' => json_decode($request->comm),
+            'sale_summary' => json_decode($request->sale_summary, true),
+            'date' => json_decode($request->date)
+        ]);
+    }
+
+    public function payslip(Request $request)
+    {
+        $this->validate($request, [
+            'uid' => 'required|in:' . implode(',', $this->_userIDs),
+            'month' => 'required|date_format:Y-m-d',
+        ]);
+
+        $user = User::where('uid', $request->uid)->get();
+        $user = $user[0];
+
+        $sale_results = DB::table('sales')
+            ->select(DB::raw("
+                cdate, 
+                SUM(CASE WHEN service != '[]' AND product != '[]' THEN amount - pamount
+                    WHEN service != '[]' THEN amount ELSE 0 END) AS total_service,
+                SUM(CASE WHEN service != '[]' AND product != '[]' THEN pamount
+                    WHEN product != '[]' THEN amount ELSE 0 END) AS total_product
+            "))
+            ->whereBetween('cdate', [date("Y-m-d", strtotime($request->month)), date('Y-m-t', strtotime($request->month))])
+            ->where('uid', $request->uid)
+            ->whereNull('deleted_at')
+            ->groupBy('cdate')
+            ->get()
+            ->toArray();
+
+        $ot_results = DB::table('salaries')
+            ->select('cdate', DB::raw("SUM(amount) AS amount"))
+            ->whereBetween('cdate', [date("Y-m-d", strtotime($request->month)), date('Y-m-t', strtotime($request->month))])
+            ->where([
+                ['uid', '=', $request->uid],
+                ['subject', '=', Salary::$all_subject_type_to_code['ot']],
+            ])
+            ->whereNull('deleted_at')
+            ->groupBy('cdate')
+            ->get()
+            ->toArray();
+
+        $daily_ot = [];
+        foreach ($ot_results as $result) {
+            $daily_ot[$result->cdate] = $result->amount;
+        }
+
+        $results = DB::table('salaries')
+            ->select(DB::raw("
+                subject,
+                SUM(amount) AS amount
+                "))
+            ->whereNull('deleted_at')
+            ->where('uid', $request->uid)
+            ->where(DB::raw("DATE_FORMAT(cdate, '%Y-%m-01')"), $request->month)
+            ->groupBy('subject')
+            ->get()
+            ->toArray();
+
+        $adjustments = [];
+
+        foreach ($results as $key => $record) {
+            $adjustments[$record->subject] = $record->amount;
+        }
+
+        $comm_results = DB::table('sales')
+        // SUM(CASE WHEN service != '[]' THEN amount * comm / 100 ELSE 0 END) AS service_comm,
+        // SUM(CASE WHEN product != '[]' THEN amount * comm / 100 ELSE 0 END) AS product_comm
+            ->select(DB::raw("
+                SUM(CASE WHEN service != '[]' AND product != '[]' THEN (amount - pamount) * comm / 100
+                    WHEN service != '[]' THEN amount * comm / 100 ELSE 0 END) AS service_comm,
+                SUM(CASE WHEN service != '[]' AND product != '[]' THEN pamount * comm / 100
+                    WHEN product != '[]' THEN amount * comm / 100 ELSE 0 END) AS product_comm
+                "))
+            ->whereNull('deleted_at')
+            ->where('uid', $request->uid)
+            ->where(DB::raw("DATE_FORMAT(cdate, '%Y-%m-01')"), $request->month)
+            ->get();
+
+        $comm = $comm_results[0];
+
+        $credit_codes = array_keys(Salary::$subject_code_to_type['c']);
+        $debit_codes = array_keys(Salary::$subject_code_to_type['d']);
+
+        $total_deduction = $total_addition = 0;
+
+        foreach ($adjustments as $code => $amount) {
+            if (in_array($code, $credit_codes)) {
+                $total_addition += $amount;
+            } elseif (in_array($code, $debit_codes)) {
+                $total_deduction += $amount;
+            }
+        }
+
+        $epf_employer = $user->salary * (Salary::$epf_percent['employer'] / 100);
+        $epf_employee = $user->salary * (Salary::$epf_percent['employee'] / 100);
+
+        $total_addition += $comm->service_comm + $comm->product_comm;
+        $total_deduction += $epf_employee;
+
+        $gross_pay = $user->salary + $total_addition;
+        $net_total = $gross_pay - $total_deduction;
+
+        $all_dates = [];
+        $start_date = $request->month;
+        $end_date = date('Y-m-t', strtotime($request->month));
+
+        while ($start_date <= $end_date) {
+            $all_dates[] = $start_date;
+            $start_date = date('Y-m-d', strtotime($start_date . '+1 day'));
+        }
+
+        $formatted_sale_results = [];
+
+        foreach ($sale_results as $sale) {
+            $formatted_sale_results[$sale->cdate]['total_service'] = $sale->total_service;
+            $formatted_sale_results[$sale->cdate]['total_product'] = $sale->total_product;
+        }
+
+        $sale_summary = [];
+        $sale_dates = array_keys($formatted_sale_results);
+
+        foreach ($all_dates as $date) {
+            $sale_summary[$date] = [];
+            if (in_array($date, $sale_dates)) {
+                $sale_summary[$date]['total_service'] = $formatted_sale_results[$date]['total_service'];
+                $sale_summary[$date]['total_product'] = $formatted_sale_results[$date]['total_product'];
+            } else {
+                $sale_summary[$date]['total_service'] = 0;
+                $sale_summary[$date]['total_product'] = 0;
+            }
+            $sale_summary[$date]['total_ot'] = $daily_ot[$date] ?? 0;
+        }
+
+        return view('payslips.show', [
+            'subject_types' => Salary::$subject_type_to_code,
+            'user' => $user,
+            'adjustments' => $adjustments,
+            'epf_employer' => $epf_employer,
+            'epf_employee' => $epf_employee,
+            'total_addition' => $total_addition,
+            'total_deduction' => $total_deduction,
+            'gross_pay' => $gross_pay,
+            'net_total' => $net_total,
+            'comm' => $comm,
+            'sale_summary' => $sale_summary,
+            'date' => date('F d, Y', strtotime($request->month))
+        ]);
+    }
+
+    public function search(Request $request)
+    {
+        $whereq = [];
+        if ($_POST) {
+            foreach ($this->_search_fields as $field) {
+                if (isset($_POST[$field]) && !empty($_POST[$field]) && in_array($field, ['from_date', 'to_date'])) {
+                    $whereq[] = date($_POST[$field]);
+                }
+            }
+        }
+
+        return $this->index($whereq);
     }
 }

@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         View::share('glob_position', User::$position_code_to_text);
         View::share('glob_subject', Salary::$subject_code_to_text);
+        View::share('glob_gender', User::$gender_code_to_text);
     }
 
     /**

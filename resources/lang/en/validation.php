@@ -158,9 +158,13 @@ return [
         'uid' => 'Username',
         'type' => 'Type',
         'subject' => 'Subject',
+        'service' => 'Service',
+        'product' => 'Product',
         'amount' => 'Amount',
         'remark' => 'Remark',
         'cdate' => 'Date',
+        'pamount' => 'Product Amount',
+        'comm' => 'Commission',
     ],
 
 ];

@@ -55,4 +55,9 @@ class User extends Authenticatable
         300 => 'translate.position/pt-assistant',
         900 => 'translate.position/programmer',
     ];
+
+    public static $gender_code_to_text = [
+        'm' => 'translate.gender/male',
+        'f' => 'translate.gender/female',
+    ];
 }

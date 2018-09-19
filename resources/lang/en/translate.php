@@ -8,11 +8,15 @@ return [
     |--------------------------------------------------------------------------
  */
 
+	// General
+	'general/search-panel' => 'Search Panel',
+
 	// Menu
 	'menu/dashboard' => 'Dashboard',
 	'menu/sales' => 'Sales',
 	'menu/report' => 'Reports',
 	'menu/report/sales-report' => 'Sales Report',
+	'menu/report/sales-detail-report' => 'Sales Detail Report',
 	'menu/report/daily-sales-report' => 'Daily Sales Report',
 	'menu/report/monthly-sales-report' => 'Month Sales Report',
 	'menu/report/all-sales-report' => 'All Sales Report',
@@ -26,6 +30,8 @@ return [
 	'menu/setting/salary-voucher' => 'Salary Voucher',
 	
 	// Page Title
+	'pagetitle/sales' => 'Sales',
+	'pagetitle/new-sales' => 'New Sales',
 	'pagetitle/add-sales' => 'Add Sales',
 	'pagetitle/edit-sales' => 'Edit Sales',
 	'pagetitle/update-sales' => 'Update Sales ID',
@@ -40,15 +46,29 @@ return [
 	'pagetitle/update-product' => 'Update Product ID',
 	'pagetitle/add-amendments' => 'Add Salary Amendments',
 	'pagetitle/salary-voucher' => 'Salary Voucher',
+	'pagetitle/payslip' => 'Payslip',
 	'pagetitle/all-sales' => 'All Sales',
+	'pagetitle/new-service' => 'New Service',
+	'pagetitle/service' => 'Services',
+	'pagetitle/new-product' => 'New Product',
+	'pagetitle/product' => 'Products',
+	'pagetitle/adjustment' => 'Adjustments',
+	'pagetitle/new-adjustment' => 'New Adjustment',
+	'pagetitle/edit-adjustment' => 'Edit Adjustment',
+	'pagetitle/salary-management' => 'Salary Management',
+	'pagetitle/user-info' => 'User Information',
+	'pagetitle/new-user' => 'New User',
+	'pagetitle/user' => 'User',
+	'pagetitle/sales-summary' => 'Sales Summary',
 	
 	
 	// Listing
 	'listing/all-sales' => 'All Sales Listing',
 	'listing/sales' => 'Sales Listing',
-	'listing/user' => 'Users Listing',
+	'listing/user' => 'User Listing',
 	'listing/service' => 'Service Listing',
 	'listing/product' => 'Product Listing',
+	'listing/sales-summary' => 'Sales Summary',
 	'listing/salary-amendment' => 'Salary Amendments Listing',
 	
 	// Button
@@ -64,14 +84,20 @@ return [
 	'button/save' => 'Save',
 	'button/submit' => 'Submit',
 	'button/generate' => 'Generate',
+	'button/create' => 'Create',
+	'button/restore' => 'Restore',
+	'button/view' => 'View',
 	
 	// Field
+	'field/sales' => 'Sales',
 	'field/credit' => 'Credit',
 	'field/debit' => 'Debit',
 	'field/service' => 'Service',
+	'field/noOfService' => 'No of Service',
 	'field/code' => 'Code',
 	'field/username' => 'Username',
 	'field/product' => 'Product',
+	'field/noOfProduct' => 'No of Product',
 	'field/price' => 'Price (RM)',
 	'field/cash' => 'Cash',
 	'field/changes' => 'Changes',
@@ -103,7 +129,8 @@ return [
 	'field/addition' => "Addition",
 	'field/deduction' => "Deduction",
 	'field/subject' => "Subject",
-	'field/amount' => "Amount",
+	'field/amount' => "Amount (RM)",
+	'field/pamount' => "Product Amount (RM)",
 	'field/cdate' => "Date",
 	'field/from_date' => 'From Date',
 	'field/to_date' => 'To Date',
@@ -113,10 +140,12 @@ return [
 	'field/day' => "Day",
 	'field/ot' => "Overtime Pay",
 	'field/payslip-summary' => "Payslip Summary",
+	'field/gender' => "Gender",
+	'field/icno' => "IC No",
 
 	'field/earning' => "Total Earning",
 	'field/basic-pay' => "Basic Pay",
-	'field/commission' => "Commission",
+	'field/commission' => "Commission (%)",
 	'field/bonus' => "Bonus",
 	'field/allowance' => "Allowance",
 	'field/gross-pay' => "Gross Pay",
@@ -129,12 +158,21 @@ return [
 	'field/consumption' => "Consumption",
 	'field/unpaid' => "Unpaid",
 	'field/total-deduction' => "Total Deduction",
+
+	// Service
+	'field/service-name' => "Service Name",
+	'field/product-name' => "Product Name",
+	'field/status' => "Status",
 	
 	// Position
 	'position/director' => "Director",
 	'position/assistant' => "Assistant",
 	'position/pt-assistant' => "Assistant (Part Time)",
 	'position/programmer' => "Programmer",
+
+	// Gender
+	'gender/male' => "Male",
+	'gender/female' => "Female",
 	
 	// Amendments Subject
 	'amendment-subject/bonus' => "Bonus",
@@ -158,7 +196,35 @@ return [
 	'message/success-updated' => "The record (ID: :id) has been updated successfully.",
 	'message/success-deleted' => "The record (ID: :id) has been deleted successfully.",
 	'message/failed' => 'Failed',
-
 	'message/record-found' => 'Found :number matched record(s).',
 
+	// Placeholder
+	'placeholder/start-date' => 'Start Date',
+	'placeholder/end-date' => 'End Date',
+	'placeholder/pamount' => 'Product Amount',
+	'placeholder/amount' => 'Amount',
+	'placeholder/service-name' => 'Service Name',
+	'placeholder/product-name' => 'Product Name',
+	'placeholder/username' => 'Username',
+	'placeholder/fullname' => 'Full Name',
+	'placeholder/icno' => 'IC No',
+	'placeholder/email' => 'Email',
+	'placeholder/mobile' => 'Mobile',
+	'placeholder/address' => 'Address',
+	'placeholder/salary' => 'Salary',
+
+	// Status
+	'status/abandoned' => "Abandoned",
+	'status/active' => "Active",
+	'status/deleted' => "Deleted",
+
+	// Notification
+	'notification/is-deleted-user' => ":username has been deleted from user.",
+	'tooltip/sales-details' => "Service: RM :service_amount, Product: RM :product_amount",
+
+	// Payslip
+	'payslip/date' => "Date (Day)",
+	'payslip/service' => "Service (RM)",
+	'payslip/product' => "Product (RM)",
+	'payslip/ot' => "Over Time (RM)",
 ];

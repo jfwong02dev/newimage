@@ -49,6 +49,23 @@
 					<a href="{{ route('sales.index') }}"><i class="menu-icon fa fa-tasks"></i><span class="mm-text">Sales</span></a>
 				</li>
 				<li class="mm-dropdown">
+					<a href="#"><i class="menu-icon fa fa-file-text-o"></i><span class="mm-text">Report</span></a>
+					<ul>
+						<li>
+							<a tabindex="-1" href="{{ route('report.sales-details') }}"><span class="mm-text">Sales Details</span></a>
+						</li>
+						<li>
+							<a tabindex="-1" href="{{ route('report.monthly-sales') }}"><span class="mm-text">Monthly Total Sales</span></a>
+						</li>
+						<li>
+							<a tabindex="-1" href="{{ route('report.yearly-sales') }}"><span class="mm-text">Yearly Total Sales</span></a>
+						</li>
+						<li>
+							<a tabindex="-1" href="{{ route('report.all-sales') }}"><span class="mm-text">All Sales Report</span></a>
+						</li>
+					</ul>
+				</li>
+				<li class="mm-dropdown">
 					<a href="#"><i class="menu-icon fa fa-cogs"></i><span class="mm-text">Management</span></a>
 					<ul>
 						<li>
@@ -56,6 +73,9 @@
 						</li>
 						<li>
 							<a tabindex="-1" href="{{ route('users.index') }}"><span class="mm-text">User</span></a>
+						</li>
+						<li>
+							<a tabindex="-1" href="{{ route('payslips.index') }}"><span class="mm-text">Payslip</span></a>
 						</li>
 						<li>
 							<a tabindex="-1" href="{{ route('salaries.index') }}"><span class="mm-text">Salary Adjustment</span></a>

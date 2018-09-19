@@ -68,6 +68,20 @@ class Salary extends Model
         70 => 'translate.amendment-subject/advance',
     ];
 
+    public static $all_subject_type_to_code = [
+        'bonus' => 10,
+        'ot' => 20,
+        'allowance' => 30,
+        'consumption' => 50,
+        'unpaid' => 60,
+        'advance' => 70,
+    ];
+
+    public static $epf_percent = [
+        'employer' => 13,
+        'employee' => 11,
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\User', 'uid', 'uid')->withTrashed();
