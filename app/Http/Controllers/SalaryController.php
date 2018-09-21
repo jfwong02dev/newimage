@@ -10,18 +10,18 @@ use Illuminate\Support\Facades\DB;
 
 class SalaryController extends Controller
 {
+    protected $_all_users;
     protected $_users;
     protected $_userIDs;
     protected $_subject_of_type;
-
-    protected $_search_fields = [
-        'from_date', 'to_date',
-    ];
 
     public function __construct()
     {
         $this->_users = User::whereIn('position', User::$staff_codes)
             ->whereNull('deleted_at')
+            ->get();
+
+        $this->_all_users = User::whereIn('position', User::$staff_codes)
             ->get();
 
         $this->_userIDs = array_column($this->_users->toArray(), 'uid');
@@ -45,33 +45,36 @@ class SalaryController extends Controller
      */
     public function index($whereq = [])
     {
-        foreach ($this->_search_fields as $field) {
-            if (in_array($field, array('from_date', 'to_date'))) {
-                $type = 'date';
-            } else {
-                $type = 'text';
-            }
-
-            $value = !empty($_POST[$field]) ? $_POST[$field] : '';
-
-
-            $this->_fields[$field]['name'] = $field;
-            $this->_fields[$field]['type'] = $type;
-            $this->_fields[$field]['value'] = $value;
+        $search = strpos($_SERVER['REQUEST_URI'], 'search') ? true : false;
+        if (!$search) {
+            session()->forget('_old_input');
         }
 
         $salary = Salary::withTrashed();
 
         if ($whereq) {
-            $salary->whereBetween('cdate', $whereq);
+            $date_range = [];
+            foreach ($whereq as $key => $value) {
+                if (in_array($key, ['from_date', 'to_date'])) {
+                    $date_range[] = $value;
+                } else if (is_array($value)) {
+                    $salary->whereIn($key, $value);
+                } else {
+                    $salary->where($key, $value);
+                }
+            }
+            if ($date_range) {
+                $salary->whereBetween('cdate', $date_range);
+            }
         }
 
         $adjustments = $salary->get();
 
         return view('salaries.index', [
             'adjustments' => $adjustments,
-            'search' => strpos($_SERVER['REQUEST_URI'], 'search') ? true : false,
-            'search_fields' => $this->_fields,
+            'users' => $this->_all_users,
+            'subjects' => $this->_subject_of_type,
+            'search' => $search,
         ]);
     }
 
@@ -210,7 +213,6 @@ class SalaryController extends Controller
 
     public function restore($id)
     {
-        dd($id);
         $salary = Salary::onlyTrashed()->find($id);
         $salary->restore();
 
@@ -327,8 +329,6 @@ class SalaryController extends Controller
         }
 
         $comm_results = DB::table('sales')
-        // SUM(CASE WHEN service != '[]' THEN amount * comm / 100 ELSE 0 END) AS service_comm,
-        // SUM(CASE WHEN product != '[]' THEN amount * comm / 100 ELSE 0 END) AS product_comm
             ->select(DB::raw("
                 SUM(CASE WHEN service != '[]' AND product != '[]' THEN (amount - pamount) * comm / 100
                     WHEN service != '[]' THEN amount * comm / 100 ELSE 0 END) AS service_comm,
@@ -413,12 +413,13 @@ class SalaryController extends Controller
 
     public function search(Request $request)
     {
+        $request->flash();
         $whereq = [];
-        if ($_POST) {
-            foreach ($this->_search_fields as $field) {
-                if (isset($_POST[$field]) && !empty($_POST[$field]) && in_array($field, ['from_date', 'to_date'])) {
-                    $whereq[] = date($_POST[$field]);
-                }
+        $search_fields = ['uid', 'subject', 'from_date', 'to_date'];
+
+        foreach ($search_fields as $field) {
+            if (isset($_POST[$field]) && !empty($_POST[$field])) {
+                $whereq[$field] = $_POST[$field];
             }
         }
 

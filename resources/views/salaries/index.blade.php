@@ -2,7 +2,7 @@
 @section('title', __('translate.pagetitle/salary-management'))
 @section('content')
 
-	<div class="panel">
+	<div class="panel" id="search-form" style="display:{{ $search ? 'block' : 'none' }}">
 		<div class="panel-heading">
 			<div class="row">
 				<span class="panel-title"><i class="panel-title-icon fa fa-search"></i>{{ __('translate.general/search-panel') }}</span>
@@ -12,12 +12,48 @@
 			<form action="{{route('salaries.search')}}" method="post" name="search-form">
 				@csrf
 				<div class="form-group">
-					<label for="daterange" class="col-sm-2 control-label">{{ __('translate.field/date') }}</label>
-					<div class="col-sm-10">
+					<label class="col-sm-3 control-label">{{ __('translate.field/username') }}</label>
+					<div class="col-sm-9">
+						<div class="select2-primary">
+							<select multiple="multiple" class="form-control" id="uid" name="uid[]">
+								@foreach($users as $user)
+								<option value="{{$user->uid}}" 
+									{{ ( 
+										in_array($user->uid, (is_array(old('uid')) ? old('uid') : []))
+										) ? 'selected' : '' 
+									}}>{{ $user->username }}</option>
+								@endforeach
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ __('translate.field/subject') }}</label>
+					<div class="col-sm-9">
+						<div class="select2-primary">
+							<select multiple="multiple" class="form-control" id="subject" name="subject[]">
+								@foreach($subjects as $type => $subject)
+								<optgroup label="{{__('translate.amendment-type/' . $type)}}">
+									@foreach($subject as $sub_code => $sub_name)
+									<option value="{{$sub_code}}" 
+									{{ ( 
+										in_array($sub_code, (is_array(old('subject')) ? old('subject') : []))
+										) ? 'selected' : '' 
+									}}>{{ $sub_name }}</option>
+									@endforeach
+								</optgroup>
+								@endforeach
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="daterange" class="col-sm-3 control-label">{{ __('translate.field/date') }}</label>
+					<div class="col-sm-9">
 						<div class="input-daterange input-group" id="bs-datepicker-range">
-							<input type="text" class="input-sm form-control" name="from_date" value="{{ $search_fields['from_date']['value'] ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/start-date') }}" required>
+							<input type="text" class="input-sm form-control" name="from_date" value="{{ old('from_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/start-date') }}">
 							<span class="input-group-addon">to</span>
-							<input type="text" class="input-sm form-control" name="to_date" value="{{ $search_fields['to_date']['value'] ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/end-date') }}" required>
+							<input type="text" class="input-sm form-control" name="to_date" value="{{ old('to_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/end-date') }}">
 						</div>
 					</div>
 				</div>
@@ -33,6 +69,7 @@
 	<div class="panel">
 		<div class="panel-heading">
 			<div class="row">
+				<div class="pull-right col-xs-12 col-sm-auto btn btn-primary btn-labeled" id="search-btn"><span class="btn-label icon fa fa-search"></span>{{__('translate.button/show')}}</div>
 				<div class="pull-right col-xs-12 col-sm-auto"><a href="{{ route('salaries.create') }}" class="btn btn-primary btn-labeled"><span class="btn-label icon fa fa-plus"></span>{{__('translate.pagetitle/new-adjustment')}}</a></div>
 				@if($search)
 					<span class="pull-right">{{ __('translate.message/record-found', ['number' => count($adjustments)])}}   <a href="{{ route('salaries.index') }}">{{ __('translate.button/clear') }}</a></span>
@@ -122,8 +159,10 @@
 		
 		<script>
 			init.push(function () {
+				$("#uid").select2();
+				$("#subject").select2();
+
 				$('#adjustment-datatables').dataTable();
-				// $('#jq-datatables-example_wrapper .table-caption').text('Some header text');
 				$('#adjustment-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
 
 				$('#adjustment-datatables').on('click', '[name=delete-form]', function () {
@@ -159,6 +198,16 @@
 				$('#bs-datepicker-range').datepicker({
 					todayBtn:'linked',
 					format:'yyyy-mm-dd',
+				});
+
+				$("#search-btn").click(function(){
+					if($('#search-form').css('display') === 'none') {
+						$('#search-btn').html("<span class='btn-label icon fa fa-search'></span>{{__('translate.button/hide')}}")
+					}
+					else {
+						$('#search-btn').html("<span class='btn-label icon fa fa-search'></span>{{__('translate.button/show')}}")
+					}
+					$('#search-form').toggle();
 				});
 			});
 		</script>

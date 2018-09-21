@@ -24,10 +24,6 @@ class ReportController extends Controller
     protected $_all_sales;
     protected $_available_sales;
 
-    protected $_search_fields = [
-        'from_date', 'to_date',
-    ];
-
     /**
      * Create a new controller instance.
      *
@@ -55,21 +51,6 @@ class ReportController extends Controller
 
     public function saleDetail($whereq = [])
     {
-        foreach ($this->_search_fields as $field) {
-            if (in_array($field, array('from_date', 'to_date'))) {
-                $type = 'date';
-            } else {
-                $type = 'text';
-            }
-
-            $value = !empty($_POST[$field]) ? $_POST[$field] : '';
-
-
-            $this->_fields[$field]['name'] = $field;
-            $this->_fields[$field]['type'] = $type;
-            $this->_fields[$field]['value'] = $value;
-        }
-
         $sales = DB::table('sales')
             ->whereBetween('cdate', $whereq ? $whereq : [date(Carbon::minValue()), date(Carbon::minValue())])
             ->get();
@@ -103,7 +84,6 @@ class ReportController extends Controller
             'services_summary' => $serviceSummary,
             'products_summary' => $productSummary,
             'search' => strpos($_SERVER['REQUEST_URI'], 'search') ? true : false,
-            'search_fields' => $this->_fields,
         ]);
     }
 
@@ -168,12 +148,15 @@ class ReportController extends Controller
 
     public function search(Request $request)
     {
+        $request->flash();
+
         $whereq = [];
         if ($_POST) {
-            foreach ($this->_search_fields as $field) {
-                if (isset($_POST[$field]) && !empty($_POST[$field]) && in_array($field, ['from_date', 'to_date'])) {
-                    $whereq[] = date($_POST[$field]);
-                }
+            if (!empty($_POST['from_date'])) {
+                $whereq[] = date($_POST['from_date']);
+            }
+            if (!empty($_POST['to_date'])) {
+                $whereq[] = date($_POST['to_date']);
             }
         }
 

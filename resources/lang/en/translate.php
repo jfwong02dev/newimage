@@ -87,6 +87,8 @@ return [
 	'button/create' => 'Create',
 	'button/restore' => 'Restore',
 	'button/view' => 'View',
+	'button/show' => 'Show',
+	'button/hide' => 'Hide',
 	
 	// Field
 	'field/sales' => 'Sales',
@@ -181,6 +183,9 @@ return [
 	'amendment-subject/consumption' => "Consumption",
 	'amendment-subject/unpaid' => "Unpaid",
 	'amendment-subject/advance' => "Advance",
+
+	'amendment-type/c' => "Credit",
+	'amendment-type/d' => "Debit",
 	
 	// Error
 	'error/not-allow-create-s&p-once' => 'Not allow to create sales of both service and product at once.',
