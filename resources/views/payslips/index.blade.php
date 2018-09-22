@@ -44,6 +44,17 @@
 							</div>
 						</div>
 
+						<div class="form-group{{ $errors->has('epf_socso') ? ' has-error' : '' }}">
+							<label for="month" class="col-sm-3 control-label"></label>
+							<div class="col-sm-9">
+								<div class="checkbox" style="margin: 0;">
+									<label>
+										<input type="checkbox" name="epf_socso" checked> EPF & Socso
+									</label>
+								</div> <!-- / .checkbox -->
+							</div>
+						</div>
+
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
 								<button type="submit" class="btn btn-primary">Generate</button>

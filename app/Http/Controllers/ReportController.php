@@ -33,8 +33,8 @@ class ReportController extends Controller
     {
         $this->middleware('auth');
 
-        $this->_all_users = User::withTrashed()->get();
-        $this->_available_users = User::all();
+        $this->_all_users = User::withTrashed()->where('uid', '!=', 10001)->get();
+        $this->_available_users = User::where('uid', '!=', 10001)->get();
 
         $this->_all_services = Service::withTrashed()->get();
         $this->_available_services = Service::all();
@@ -51,9 +51,33 @@ class ReportController extends Controller
 
     public function saleDetail($whereq = [])
     {
-        $sales = DB::table('sales')
-            ->whereBetween('cdate', $whereq ? $whereq : [date(Carbon::minValue()), date(Carbon::minValue())])
-            ->get();
+        $search = strpos($_SERVER['REQUEST_URI'], 'search') ? true : false;
+        if (!$search) {
+            session()->forget('_old_input');
+        }
+
+        $sales = DB::table('sales');
+
+        if ($whereq) {
+            $date_range = [];
+            foreach ($whereq as $key => $value) {
+                if (in_array($key, ['from_date', 'to_date'])) {
+                    $date_range[] = $value;
+                } else if (is_array($value)) {
+                    $sales->whereIn($key, $value);
+                } else {
+                    $sales->where($key, $value);
+                }
+            }
+            if ($date_range) {
+                if (count($date_range) === 1) {
+                    $date_range[] = Carbon::now()->toDateString();
+                }
+                $sales->whereBetween('cdate', $date_range);
+            }
+        }
+
+        $sales = $sales->get();
 
         $serviceSummary = [];
         $productSummary = [];
@@ -83,7 +107,7 @@ class ReportController extends Controller
             'all_products' => $this->_all_products,
             'services_summary' => $serviceSummary,
             'products_summary' => $productSummary,
-            'search' => strpos($_SERVER['REQUEST_URI'], 'search') ? true : false,
+            'search' => $search,
         ]);
     }
 
@@ -125,9 +149,40 @@ class ReportController extends Controller
         ]);
     }
 
-    public function allSale()
+    public function allSale($whereq = [])
     {
-        $sales = Sale::all();
+        $search = strpos($_SERVER['REQUEST_URI'], 'search') ? true : false;
+        if (!$search) {
+            session()->forget('_old_input');
+        }
+
+        $sales = Sale::where('deleted_at', null);
+
+        if ($whereq) {
+            $date_range = [];
+            foreach ($whereq as $key => $value) {
+                if (in_array($key, ['from_date', 'to_date'])) {
+                    $date_range[] = $value;
+                } else if (in_array($key, ['service', 'product'])) {
+                    foreach ($value as $code) {
+                        $sales->where($key, 'like', '%' . $code . '%');
+                    }
+                } else if (is_array($value)) {
+                    $sales->whereIn($key, $value);
+                } else {
+                    $sales->where($key, $value);
+                }
+            }
+
+            if ($date_range) {
+                if (count($date_range) === 1) {
+                    $date_range[] = Carbon::now()->toDateString();
+                }
+                $sales->whereBetween('cdate', $date_range);
+            }
+        }
+
+        $sales = $sales->get();
 
         $service_code_to_name = [];
         foreach ($this->_all_services as $service) {
@@ -140,26 +195,41 @@ class ReportController extends Controller
         }
 
         return view('reports.all-sales', [
+            'users' => $this->_all_users,
             'sales' => $sales,
             'services' => $service_code_to_name,
-            'products' => $product_code_to_name
+            'products' => $product_code_to_name,
+            'search' => $search
         ]);
     }
 
     public function search(Request $request)
     {
         $request->flash();
+        $uri = $request->path();
+        $path = explode('/', $uri);
 
         $whereq = [];
-        if ($_POST) {
-            if (!empty($_POST['from_date'])) {
-                $whereq[] = date($_POST['from_date']);
-            }
-            if (!empty($_POST['to_date'])) {
-                $whereq[] = date($_POST['to_date']);
+        $search_fields = ['uid', 'service', 'product', 'comm', 'from_date', 'to_date'];
+
+        foreach ($search_fields as $field) {
+            if (isset($_POST[$field]) && !empty($_POST[$field])) {
+                $whereq[$field] = $_POST[$field];
             }
         }
 
-        return $this->saleDetail($whereq);
+        switch ($path[0]) {
+            case 'sales-details-report':
+                return $this->saleDetail($whereq);
+                break;
+
+            case 'all-sales-report':
+                return $this->allSale($whereq);
+                break;
+
+            default:
+                dd('wrong path');
+                break;
+        }
     }
 }

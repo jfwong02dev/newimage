@@ -139,7 +139,7 @@
                                     </tr>
                                     <tr>
                                         <td>{{ trans('translate.field/socso') }}</td>
-                                        <td>RM <span class="pull-right">{{ number_format('0', 2) }}</span></td>
+                                        <td>RM <span class="pull-right">{{ number_format($socso_employee, 2) }}</span></td>
                                     </tr>
                                     <tr>
                                         <td>{{ trans('translate.field/advance-salary') }}</td>
@@ -182,7 +182,7 @@
                                     </tr>
                                     <tr>
                                         <td>{{ trans('translate.field/employer-socso') }}</td>
-                                        <td>RM <span class="pull-right">{{ number_format('0', 2) }}</span></td>
+                                        <td>RM <span class="pull-right">{{ number_format($socso_employer, 2) }}</span></td>
                                     </tr>
                                 </tbody>
                             </table>

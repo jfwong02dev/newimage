@@ -43,54 +43,51 @@
 			</div>
 			<ul class="navigation">
 				<li>
-					<a href="{{ URL::to('/dashboard') }}"><i class="menu-icon fa fa-dashboard"></i><span class="mm-text">Dashboard</span></a>
+					<a href="{{ URL::to('/dashboard') }}"><i class="menu-icon fa fa-dashboard"></i><span class="mm-text">{{__('translate.menu/dashboard')}}</span></a>
 				</li>
 				<li>
-					<a href="{{ route('sales.index') }}"><i class="menu-icon fa fa-tasks"></i><span class="mm-text">Sales</span></a>
+					<a href="{{ route('sales.index') }}"><i class="menu-icon fa fa-tasks"></i><span class="mm-text">{{__('translate.menu/sales')}}</span></a>
 				</li>
 				<li class="mm-dropdown">
-					<a href="#"><i class="menu-icon fa fa-file-text-o"></i><span class="mm-text">Report</span></a>
+					<a href="#"><i class="menu-icon fa fa-file-text-o"></i><span class="mm-text">{{__('translate.menu/report')}}</span></a>
 					<ul>
 						<li>
-							<a tabindex="-1" href="{{ route('report.sales-details') }}"><span class="mm-text">Sales Details</span></a>
+							<a tabindex="-1" href="{{ route('report.sales-details') }}"><span class="mm-text">{{__('translate.menu/report/sales-details')}}</span></a>
 						</li>
 						<li>
-							<a tabindex="-1" href="{{ route('report.monthly-sales') }}"><span class="mm-text">Monthly Total Sales</span></a>
+							<a tabindex="-1" href="{{ route('report.monthly-sales') }}"><span class="mm-text">{{__('translate.menu/report/monthly-sales')}}</span></a>
 						</li>
 						<li>
-							<a tabindex="-1" href="{{ route('report.yearly-sales') }}"><span class="mm-text">Yearly Total Sales</span></a>
+							<a tabindex="-1" href="{{ route('report.yearly-sales') }}"><span class="mm-text">{{__('translate.menu/report/yearly-sales')}}</span></a>
 						</li>
 						<li>
-							<a tabindex="-1" href="{{ route('report.all-sales') }}"><span class="mm-text">All Sales Report</span></a>
+							<a tabindex="-1" href="{{ route('report.all-sales') }}"><span class="mm-text">{{__('translate.menu/report/all-sales')}}</span></a>
 						</li>
 					</ul>
 				</li>
 				<li class="mm-dropdown">
-					<a href="#"><i class="menu-icon fa fa-cogs"></i><span class="mm-text">Management</span></a>
+					<a href="#"><i class="menu-icon fa fa-cogs"></i><span class="mm-text">{{__('translate.menu/management')}}</span></a>
 					<ul>
 						<li>
-							<a tabindex="-1" href="{{ route('sales.index') }}"><span class="mm-text">Sale</span></a>
+							<a tabindex="-1" href="{{ route('users.index') }}"><span class="mm-text">{{__('translate.menu/management/user')}}</span></a>
 						</li>
 						<li>
-							<a tabindex="-1" href="{{ route('users.index') }}"><span class="mm-text">User</span></a>
+							<a tabindex="-1" href="{{ route('payslips.index') }}"><span class="mm-text">{{__('translate.menu/management/payslip')}}</span></a>
 						</li>
 						<li>
-							<a tabindex="-1" href="{{ route('payslips.index') }}"><span class="mm-text">Payslip</span></a>
+							<a tabindex="-1" href="{{ route('salaries.index') }}"><span class="mm-text">{{__('translate.menu/management/adjustment')}}</span></a>
 						</li>
 						<li>
-							<a tabindex="-1" href="{{ route('salaries.index') }}"><span class="mm-text">Salary Adjustment</span></a>
+							<a tabindex="-1" href="{{ route('services.index') }}"><span class="mm-text">{{__('translate.menu/management/service')}}</span></a>
 						</li>
 						<li>
-							<a tabindex="-1" href="{{ route('services.index') }}"><span class="mm-text">Service</span></a>
-						</li>
-						<li>
-							<a tabindex="-1" href="{{ route('products.index') }}"><span class="mm-text">Product</span></a>
+							<a tabindex="-1" href="{{ route('products.index') }}"><span class="mm-text">{{__('translate.menu/management/product')}}</span></a>
 						</li>
 					</ul>
 				</li>
 			</ul> <!-- / .navigation -->
 			<div class="menu-content">
-				<a href="{{ route('sales.create') }}" class="btn btn-primary btn-block btn-outline dark">Create Sale</a>
+				<a href="{{ route('sales.create') }}" class="btn btn-primary btn-block btn-outline dark">{{__('translate.button/sales')}}</a>
 			</div>
 		</div> <!-- / #main-menu-inner -->
 	</div> <!-- / #main-menu -->

@@ -39,9 +39,43 @@ class SaleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($whereq = [])
     {
-        $sales = Sale::whereDate('created_at', Carbon::today())->get();
+        $search = strpos($_SERVER['REQUEST_URI'], 'search') ? true : false;
+        if (!$search) {
+            session()->forget('_old_input');
+        }
+
+        $start_of_last_month = Carbon::now()->subMonth()->startOfMonth()->toDateString();
+        $end_of_this_month = Carbon::now()->endOfMonth()->toDateString();
+
+        $sales = Sale::whereBetween('cdate', [$start_of_last_month, $end_of_this_month]);
+
+        if ($whereq) {
+            $date_range = [];
+            foreach ($whereq as $key => $value) {
+                if (in_array($key, ['from_date', 'to_date'])) {
+                    $date_range[] = $value;
+                } else if (in_array($key, ['service', 'product'])) {
+                    foreach ($value as $code) {
+                        $sales->where($key, 'like', '%' . $code . '%');
+                    }
+                } else if (is_array($value)) {
+                    $sales->whereIn($key, $value);
+                } else {
+                    $sales->where($key, $value);
+                }
+            }
+
+            if ($date_range) {
+                if (count($date_range) === 1) {
+                    $date_range[] = Carbon::now()->toDateString();
+                }
+                $sales->whereBetween('cdate', $date_range);
+            }
+        }
+
+        $sales = $sales->get();
 
         $service_code_to_name = [];
         foreach ($this->_all_services as $service) {
@@ -54,9 +88,11 @@ class SaleController extends Controller
         }
 
         return view('sales.index', [
+            'users' => $this->_users,
             'sales' => $sales,
             'services' => $service_code_to_name,
-            'products' => $product_code_to_name
+            'products' => $product_code_to_name,
+            'search' => $search,
         ]);
     }
 
@@ -223,5 +259,31 @@ class SaleController extends Controller
         session()->flash('restored_sale', 'You successfully restored a sale, ID: ' . $sale->id . '.');
 
         return redirect(route('sales.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $request->flash();
+        $uri = $request->path();
+        $path = explode('/', $uri);
+
+        $whereq = [];
+        $search_fields = ['uid', 'service', 'product', 'comm', 'from_date', 'to_date'];
+
+        foreach ($search_fields as $field) {
+            if (isset($_POST[$field]) && !empty($_POST[$field])) {
+                $whereq[$field] = $_POST[$field];
+            }
+        }
+
+        switch ($path[0]) {
+            case 'sales':
+                return $this->index($whereq);
+                break;
+
+            default:
+                dd('wrong path');
+                break;
+        }
     }
 }

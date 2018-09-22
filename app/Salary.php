@@ -82,6 +82,11 @@ class Salary extends Model
         'employee' => 11,
     ];
 
+    public static $socso = [
+        'employer' => 24,
+        'employee' => 4.2,
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\User', 'uid', 'uid')->withTrashed();

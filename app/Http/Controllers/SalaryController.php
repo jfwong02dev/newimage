@@ -275,8 +275,7 @@ class SalaryController extends Controller
             'month' => 'required|date_format:Y-m-d',
         ]);
 
-        $user = User::where('uid', $request->uid)->get();
-        $user = $user[0];
+        $user = User::where('uid', $request->uid)->firstOrFail();
 
         $sale_results = DB::table('sales')
             ->select(DB::raw("
@@ -355,11 +354,18 @@ class SalaryController extends Controller
             }
         }
 
-        $epf_employer = $user->salary * (Salary::$epf_percent['employer'] / 100);
-        $epf_employee = $user->salary * (Salary::$epf_percent['employee'] / 100);
+        if ($request->has('epf_socso')) {
+            $epf_employer = $user->salary * (Salary::$epf_percent['employer'] / 100);
+            $epf_employee = $user->salary * (Salary::$epf_percent['employee'] / 100);
+
+            $socso_employer = Salary::$socso['employer'];
+            $socso_employee = Salary::$socso['employee'];
+        } else {
+            $epf_employer = $epf_employee = $socso_employer = $socso_employee = 0;
+        }
 
         $total_addition += $comm->service_comm + $comm->product_comm;
-        $total_deduction += $epf_employee;
+        $total_deduction += $epf_employee + $socso_employee;
 
         $gross_pay = $user->salary + $total_addition;
         $net_total = $gross_pay - $total_deduction;
@@ -401,6 +407,8 @@ class SalaryController extends Controller
             'adjustments' => $adjustments,
             'epf_employer' => $epf_employer,
             'epf_employee' => $epf_employee,
+            'socso_employer' => $socso_employer,
+            'socso_employee' => $socso_employee,
             'total_addition' => $total_addition,
             'total_deduction' => $total_deduction,
             'gross_pay' => $gross_pay,

@@ -9,7 +9,7 @@
 		</div>
 	</div>
 	<div class="panel-body">
-		<form action="{{route('report.search')}}" method="post">
+		<form action="{{route('report.sales-details-search')}}" method="post">
 			@csrf
 			<div class="form-group">
 				<label for="daterange" class="col-sm-2 control-label">{{ __('translate.field/date') }}</label>
@@ -42,7 +42,7 @@
 	</div>
 	<div class="panel-body">
 		<div class="col-sm-6">
-			<div class="table-primary">
+			<div class="table-primary" id="service-table">
 				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="services-datatables">
 					<thead>
 						<tr>
@@ -54,7 +54,11 @@
 						@foreach($all_services as $service)
 							<tr>
 								<td>{{ $service->name }}</td>
-								<td>{{ in_array($service->code, array_keys($services_summary)) ? $services_summary[$service->code] : 0 }}</td>
+								@if(in_array($service->code, array_keys($services_summary)))
+									<td><a href="#" id="link-to-details" scode="{{$service->code}}">{{ $services_summary[$service->code] }}</a></td>
+								@else
+									<td>0</td>
+								@endif
 							</tr>
 						@endforeach
 					</tbody>
@@ -62,7 +66,7 @@
 			</div>
 		</div>
 		<div class="col-sm-6">
-			<div class="table-primary">
+			<div class="table-primary" id="product-table">
 				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="products-datatables">
 					<thead>
 						<tr>
@@ -74,13 +78,24 @@
 						@foreach($all_products as $product)
 							<tr>
 								<td>{{ $product->name }}</td>
-								<td>{{ in_array($product->code, array_keys($products_summary)) ? $products_summary[$product->code] : 0 }}</td>
+								@if(in_array($product->code, array_keys($products_summary)))
+									<td><a href="#" id="link-to-details" pcode="{{$product->code}}">{{ $products_summary[$product->code] }}</a></td>
+								@else
+									<td>0</td>
+								@endif
 							</tr>
 						@endforeach
 					</tbody>
 				</table>
 			</div>
 		</div>
+		<form action="{{route('report.all-sales-search')}}" method="post" id="link-to-details-form">
+			@csrf
+			<input type="hidden" name="from_date" value="{{ old('from_date') ?? '' }}" />
+			<input type="hidden" name="to_date" value="{{ old('to_date') ?? '' }}" />
+			<input type="hidden" name="service[]" value="" />
+			<input type="hidden" name="product[]" value="" />
+		</form>
 	</div>
 </div>
 	
@@ -97,6 +112,22 @@
 				$('#bs-datepicker-range').datepicker({
 					todayBtn:'linked',
 					format:'yyyy-mm-dd',
+				});
+
+				$('#service-table').on('click', '[id=link-to-details]', function () {
+					event.preventDefault();
+					const scodes = [];
+					scodes.push($(this).attr('scode'))
+					$('input[name=service\\[\\]]').val(scodes);
+					$('#link-to-details-form').submit();
+				});
+
+				$('#product-table').on('click', '[id=link-to-details]', function () {
+					event.preventDefault();
+					const pcodes = [];
+					pcodes.push($(this).attr('pcode'))
+					$('input[name=product\\[\\]]').val(pcodes);
+					$('#link-to-details-form').submit();
 				});
 			});
 		</script>

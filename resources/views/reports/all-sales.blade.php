@@ -1,15 +1,108 @@
 @extends('layouts.master')
 @section('title', 'All Sales Report')
 @section('content')
+
+	<div class="panel">
+		<div class="panel-heading">
+			<div class="row">
+				<span class="panel-title"><i class="panel-title-icon fa fa-search"></i>{{ __('translate.general/search-panel') }}</span>
+			</div>
+		</div>
+		<div class="panel-body">
+			<form action="{{route('report.all-sales-search')}}" method="post">
+				@csrf
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ __('translate.field/username') }}</label>
+					<div class="col-sm-9">
+						<div class="select2-primary">
+							<select multiple="multiple" class="form-control" id="uid" name="uid[]">
+								@foreach($users as $user)
+									<option value="{{$user->uid}}" 
+									{{ ( 
+										in_array($user->uid, (is_array(old('uid')) ? old('uid') : []))
+										) ? 'selected' : '' 
+									}}>{{ $user->username }}</option>
+								@endforeach
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ __('translate.field/service') }}</label>
+					<div class="col-sm-9">
+						<div class="select2-primary">
+							<select multiple="multiple" class="form-control" id="service" name="service[]">
+								@foreach($services as $scode => $sname)
+									<option value="{{$scode}}" 
+									{{ ( 
+										in_array($scode, (is_array(old('service')) ? old('service') : []))
+										) ? 'selected' : '' 
+									}}>{{ $sname }}</option>
+								@endforeach
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ __('translate.field/product') }}</label>
+					<div class="col-sm-9">
+						<div class="select2-primary">
+							<select multiple="multiple" class="form-control" id="product" name="product[]">
+								@foreach($products as $pcode => $pname)
+									<option value="{{$pcode}}" 
+									{{ ( 
+										in_array($pcode, (is_array(old('product')) ? old('product') : []))
+										) ? 'selected' : '' 
+									}}>{{ $pname }}</option>
+								@endforeach
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ __('translate.field/commission') }}</label>
+					<div class="col-sm-9">
+						<div class="checkbox" style="margin: 0;">
+							<label>
+								<input type="checkbox" name="comm[]" value="10" {{in_array(10, old('comm') ?? []) ? 'checked' : ''}}> 10
+							</label>
+							<label>
+								<input type="checkbox" name="comm[]" value="20" {{in_array(20, old('comm') ?? []) ? 'checked' : ''}}> 20
+							</label>
+						</div> <!-- / .checkbox -->
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="daterange" class="col-sm-3 control-label">{{ __('translate.field/date') }}</label>
+					<div class="col-sm-9">
+						<div class="input-daterange input-group" id="bs-datepicker-range">
+							<input type="text" class="input-sm form-control" name="from_date" value="{{ old('from_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/start-date') }}" >
+							<span class="input-group-addon">to</span>
+							<input type="text" class="input-sm form-control" name="to_date" value="{{ old('to_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/end-date') }}" >
+						</div>
+					</div>
+				</div>
+				<div class="form-group" style="margin-bottom: 0;">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-primary pull-right">{{ __('translate.button/search') }}</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
 	<div class="panel">
 		<div class="panel-heading">
 			<div class="row">
 				<span class="panel-title"><i class="panel-title-icon fa fa-list-ul"></i>All Sales Listing</span>
+				@if($search)
+					<span class="pull-right">{{ __('translate.message/record-found', ['number' => count($sales)])}}   <a href="{{ route('report.all-sales') }}">{{ __('translate.button/clear') }}</a></span>
+				@endif
 			</div>
 		</div>
 		<div class="panel-body">
 			<div class="table-primary">
-				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="jq-datatables-example">
+				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="all-sales-datatables">
 					<thead>
 						<tr>
 							<th>ID</th>
@@ -52,9 +145,17 @@
 		
 		<script>
 			init.push(function () {
-				$('#jq-datatables-example').dataTable();
-				// $('#jq-datatables-example_wrapper .table-caption').text('Some header text');
-				$('#jq-datatables-example_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
+				$("#uid").select2();
+				$("#service").select2();
+				$("#product").select2();
+
+				$('#bs-datepicker-range').datepicker({
+					todayBtn:'linked',
+					format:'yyyy-mm-dd',
+				});
+
+				$('#all-sales-datatables').dataTable();
+				$('#all-sales-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
 			});
 		</script>
 		<!-- / Javascript -->
