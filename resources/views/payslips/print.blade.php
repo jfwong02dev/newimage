@@ -70,7 +70,6 @@
 					<div class="panel-heading">
 						<span class="panel-title">{{ __('translate.field/earning') }}</span>
 					</div>
-					<div class="panel-body">
 						<table class="table table-bordered">
 							<tbody>
 								<tr>
@@ -99,12 +98,14 @@
 									<td>RM <span class="pull-right">{{ number_format($adjustments[$subject_types['c']['allowance']] ?? 0, 2) }}</span></td>
 								</tr>
 								<tr>
+									<td colspan="3"></td>
+								</tr>
+								<tr>
 									<td colspan="2">{{ trans('translate.field/gross-pay') }}</td>
 									<td>RM <span class="pull-right">{{ number_format($gross_pay, 2) }}</span></td>
 								</tr>
 							</tbody>
 						</table>
-					</div>
 				</div>
 			</div>
 			<div class="col-sm-6">
@@ -113,7 +114,6 @@
 					<div class="panel-heading">
 						<span class="panel-title">{{ trans('translate.field/deduction') }}</span>
 					</div>
-					<div class="panel-body">
 						<table class="table table-bordered">
 							<tbody>
 								<tr>
@@ -122,7 +122,7 @@
 								</tr>
 								<tr>
 									<td>{{ trans('translate.field/socso') }}</td>
-									<td>RM <span class="pull-right">{{ number_format('0', 2) }}</span></td>
+									<td>RM <span class="pull-right">{{ number_format($socso_employee, 2) }}</span></td>
 								</tr>
 								<tr>
 									<td>{{ trans('translate.field/advance-salary') }}</td>
@@ -145,7 +145,6 @@
 								</tr>
 							</tbody>
 						</table>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -156,7 +155,6 @@
 					<div class="panel-heading">
 						<span class="panel-title">{{ trans('translate.field/employer-contribution') }}</span>
 					</div>
-					<div class="panel-body">
 						<table class="table table-bordered">
 							<tbody>
 								<tr>
@@ -165,11 +163,17 @@
 								</tr>
 								<tr>
 									<td>{{ trans('translate.field/employer-socso') }}</td>
-									<td>RM <span class="pull-right">{{ number_format('0', 2) }}</span></td>
+									<td>RM <span class="pull-right">{{ number_format($socso_employer, 2) }}</span></td>
+								</tr>
+								<tr>
+									<td colspan="2"></td>
+								</tr>
+								<tr>
+									<td>{{ trans('translate.field/gross-pay') }}</td>
+									<td>RM <span class="pull-right">{{ number_format($gross_pay, 2) }}</span></td>
 								</tr>
 							</tbody>
 						</table>
-					</div>
 				</div>
 			</div>
 		</div>

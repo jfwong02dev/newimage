@@ -250,14 +250,14 @@ class SalaryController extends Controller
 
     public function payslipPrint(Request $request)
     {
-        $data = json_decode($request->summary);
-
         return view('payslips.print', [
             'subject_types' => json_decode($request->subject_types, true),
             'user' => json_decode($request->user),
             'adjustments' => json_decode($request->adjustments, true),
             'epf_employer' => json_decode($request->epf_employer),
             'epf_employee' => json_decode($request->epf_employee),
+            'socso_employer' => json_decode($request->socso_employer),
+            'socso_employee' => json_decode($request->socso_employee),
             'total_addition' => json_decode($request->total_addition),
             'total_deduction' => json_decode($request->total_deduction),
             'gross_pay' => json_decode($request->gross_pay),

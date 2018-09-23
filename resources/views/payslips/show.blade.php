@@ -41,6 +41,8 @@
                 <input type="hidden" name="adjustments" value="{{ json_encode($adjustments) }}"/>
                 <input type="hidden" name="epf_employer" value="{{ json_encode($epf_employer) }}"/>
                 <input type="hidden" name="epf_employee" value="{{ json_encode($epf_employee) }}"/>
+                <input type="hidden" name="socso_employer" value="{{ json_encode($socso_employer) }}"/>
+                <input type="hidden" name="socso_employee" value="{{ json_encode($socso_employee) }}"/>
                 <input type="hidden" name="total_addition" value="{{ json_encode($total_addition) }}"/>
                 <input type="hidden" name="total_deduction" value="{{ json_encode($total_deduction) }}"/>
                 <input type="hidden" name="gross_pay" value="{{ json_encode($gross_pay) }}"/>
