@@ -8,7 +8,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>Invoice (Print version) - Pages - PixelAdmin</title>
+	<title>{{__('translate.pagetitle/payslip')}} - {{ env('APP_NAME') }}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 	<!-- Open Sans font from Google CDN -->
@@ -40,17 +40,15 @@
 			<h3>
 				<div class="invoice-logo demo-logo"><img src="{{ asset('demo/logo-big.png') }}" alt="" style="width:100%;height:100%;"></div>
 				<div>
-					<small><strong>WJ NEW IMAGE</strong></small><br>
+					<small><strong>{{ env('APP_NAME') }}</strong></small><br>
 					{{ __('translate.pagetitle/payslip') }}
 				</div>
 			</h3>
 			<address>
-				Wj New Image Hair Studio<br>
-				No.17, Pusat Perniagaan Raub,<br>
-				27600 Raub, Pahang.
+				{!! __('translate.company/address', ['br' => '<br/>']) !!}
 			</address>
 			<div class="invoice-date">
-				<small><strong>Date</strong></small><br> {{ $date }}
+				<small><strong>{{ __('translate.field/date')}}</strong></small><br> {{ $date }}
 			</div>
 		</div> <!-- / .invoice-header -->
 		<div class="invoice-info">
@@ -59,7 +57,7 @@
 			</div> <!-- / .invoice-recipient -->
 			<div class="invoice-total">
 				<span>RM {{ number_format($net_total, 2) }}</span>
-				TOTAL:
+				{{__('translate.payslip/total')}}:
 			</div> <!-- / .invoice-total -->
 		</div> <!-- / .invoice-info -->
 		<hr>
@@ -77,11 +75,7 @@
 									<td>RM <span class="pull-right">{{ number_format($user->salary, 2) }}</span></td>
 								</tr>
 								<tr>
-									<td rowspan="5">{{ __('translate.field/commission') }}</td>
-									<td>O</td>
-									<td>RM <span class="pull-right">{{ number_format($adjustments[$subject_types['c']['ot']] ?? 0, 2) }}</span></td>
-								</tr>
-								<tr>
+									<td rowspan="2">{{ __('translate.field/commission') }}</td>
 									<td>S</td>
 									<td>RM <span class="pull-right">{{ number_format($comm->service_comm, 2) }}</span></td>
 								</tr>
@@ -90,11 +84,15 @@
 									<td>RM <span class="pull-right">{{ number_format($comm->product_comm, 2) }}</span></td>
 								</tr>
 								<tr>
-									<td>B</td>
+									<td colspan="2">{{ trans('translate.field/ot') }}</td>
+									<td>RM <span class="pull-right">{{ number_format($adjustments[$subject_types['c']['ot']] ?? 0, 2) }}</span></td>
+								</tr>
+								<tr>
+									<td colspan="2">{{ trans('translate.field/bonus') }}</td>
 									<td>RM <span class="pull-right">{{ number_format($adjustments[$subject_types['c']['bonus']] ?? 0, 2) }}</span></td>
 								</tr>
 								<tr>
-									<td>A</td>
+									<td colspan="2">{{ trans('translate.field/allowance') }}</td>
 									<td>RM <span class="pull-right">{{ number_format($adjustments[$subject_types['c']['allowance']] ?? 0, 2) }}</span></td>
 								</tr>
 								<tr>
@@ -169,8 +167,8 @@
 									<td colspan="2"></td>
 								</tr>
 								<tr>
-									<td>{{ trans('translate.field/gross-pay') }}</td>
-									<td>RM <span class="pull-right">{{ number_format($gross_pay, 2) }}</span></td>
+									<td>{{ trans('translate.field/total-contribution') }}</td>
+									<td>RM <span class="pull-right">{{ number_format($epf_employer + $socso_employer, 2) }}</span></td>
 								</tr>
 							</tbody>
 						</table>

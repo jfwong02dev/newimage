@@ -8,6 +8,9 @@ return [
     |--------------------------------------------------------------------------
  */
 
+	// Company
+	'company/address' => "Wj New Image Hair Studio :br No.17, Pusat Perniagaan Raub, :br 27600 Raub, Pahang.",
+
 	// General
 	'general/search-panel' => 'Search Panel',
 
@@ -87,6 +90,7 @@ return [
 	'button/view' => 'View',
 	'button/show' => 'Show',
 	'button/hide' => 'Hide',
+	'button/print' => 'Print',
 	
 	// Field
 	'field/sales' => 'Sales',
@@ -158,6 +162,7 @@ return [
 	'field/consumption' => "Consumption",
 	'field/unpaid' => "Unpaid",
 	'field/total-deduction' => "Total Deduction",
+	'field/total-contribution' => "Total Contribution",
 
 	// Service
 	'field/service-name' => "Service Name",
@@ -230,4 +235,5 @@ return [
 	'payslip/service' => "Service (RM)",
 	'payslip/product' => "Product (RM)",
 	'payslip/ot' => "Over Time (RM)",
+	'payslip/total' => "TOTAL",
 ];
