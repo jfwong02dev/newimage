@@ -15,9 +15,9 @@
 				<label for="daterange" class="col-sm-2 control-label">{{ __('translate.field/date') }}</label>
 				<div class="col-sm-10">
 					<div class="input-daterange input-group" id="bs-datepicker-range">
-						<input type="text" class="input-sm form-control" name="from_date" value="{{ old('from_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/start-date') }}" required>
-						<span class="input-group-addon">to</span>
-						<input type="text" class="input-sm form-control" name="to_date" value="{{ old('to_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/end-date') }}" required>
+						<input type="text" class="input-sm form-control" name="from_date" value="{{ old('from_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/start-date') }}" >
+						<span class="input-group-addon">{{ __('translate.field/daterange-to') }}</span>
+						<input type="text" class="input-sm form-control" name="to_date" value="{{ old('to_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/end-date') }}" >
 					</div>
 				</div>
 			</div>
@@ -62,6 +62,11 @@
 							</tr>
 						@endforeach
 					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="2" style="text-align:right"></th>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
@@ -86,6 +91,11 @@
 							</tr>
 						@endforeach
 					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="2" style="text-align:right"></th>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
@@ -104,9 +114,82 @@
 		
 		<script>
 			init.push(function () {
-				$('#services-datatables').dataTable();
+				$('#services-datatables').dataTable({
+					"order": [[ 1, "desc" ]],
+					"pageLength": 100,
+					"footerCallback": function ( row, data, start, end, display ) {
+						var api = this.api(), data;
+ 
+						// Remove the formatting to get integer data for summation
+						var intVal = function ( i ) {
+							return typeof i === 'string' 
+									? i.replace(/<[^>]*>/g, '')
+									: typeof i === 'number'
+										? i 
+										: 0;
+						};
+			
+						// Total over all pages
+						total = api
+							.column( 1 )
+							.data()
+							.reduce( function (a, b) {
+								return parseInt(intVal(a)) + parseInt(intVal(b));
+							}, 0 );
+			
+						// Total over this page
+						pageTotal = api
+							.column( 1, { page: 'current'} )
+							.data()
+							.reduce( function (a, b) {
+								return parseInt(intVal(a)) + parseInt(intVal(b));
+							}, 0 );
+						
+						// Update footer
+						$( api.column( 1 ).footer() ).html(
+							'Total : ' + pageTotal +' ('+ total +' ALL)'
+						);
+					}
+				});
 				$('#services-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
-				$('#products-datatables').dataTable();
+
+				$('#products-datatables').dataTable({
+					"order": [[ 1, "desc" ]],
+					"pageLength": 100,
+					"footerCallback": function ( row, data, start, end, display ) {
+						var api = this.api(), data;
+ 
+						// Remove the formatting to get integer data for summation
+						var intVal = function ( i ) {
+							return typeof i === 'string' 
+									? i.replace(/<[^>]*>/g, '')
+									: typeof i === 'number'
+										? i 
+										: 0;
+						};
+			
+						// Total over all pages
+						total = api
+							.column( 1 )
+							.data()
+							.reduce( function (a, b) {
+								return parseInt(intVal(a)) + parseInt(intVal(b));
+							}, 0 );
+			
+						// Total over this page
+						pageTotal = api
+							.column( 1, { page: 'current'} )
+							.data()
+							.reduce( function (a, b) {
+								return parseInt(intVal(a)) + parseInt(intVal(b));
+							}, 0 );
+						
+						// Update footer
+						$( api.column( 1 ).footer() ).html(
+							'Total : ' + pageTotal +' ('+ total +' ALL)'
+						);
+					}
+				});
 				$('#products-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
 
 				$('#bs-datepicker-range').datepicker({

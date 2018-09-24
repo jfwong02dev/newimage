@@ -56,7 +56,7 @@ class ReportController extends Controller
             session()->forget('_old_input');
         }
 
-        $sales = DB::table('sales');
+        $sales = Sale::where('deleted_at', null);
 
         if ($whereq) {
             $date_range = [];
@@ -165,7 +165,9 @@ class ReportController extends Controller
                     $date_range[] = $value;
                 } else if (in_array($key, ['service', 'product'])) {
                     foreach ($value as $code) {
-                        $sales->where($key, 'like', '%' . $code . '%');
+                        if ($code) {
+                            $sales->where($key, 'LIKE', '%"' . $code . '"%');
+                        }
                     }
                 } else if (is_array($value)) {
                     $sales->whereIn($key, $value);

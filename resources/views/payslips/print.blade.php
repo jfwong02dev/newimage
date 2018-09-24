@@ -8,7 +8,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>{{__('translate.pagetitle/payslip')}} - {{ env('APP_NAME') }}</title>
+	<title>{{ $user->fullname }} - {{ env('APP_NAME') }} - {{__('translate.pagetitle/payslip')}}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 	<!-- Open Sans font from Google CDN -->
@@ -20,6 +20,9 @@
 	<link href="{{ asset('css/pixel-admin.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('css/pages.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('css/rtl.min.css') }}" rel="stylesheet" type="text/css">
+
+	<!-- favicon -->
+    <link rel="shortcut icon" href="{{ asset('j-icon.png') }}">
 
 	<!--[if lt IE 9]>
 		<script src="assets/javascripts/ie.min.js"></script>
@@ -180,18 +183,18 @@
 				<thead>
 					<tr>
 						<th>{{__('translate.payslip/date')}}</th>
-						<th>{{__('translate.payslip/service')}}</th>
-						<th>{{__('translate.payslip/product')}}</th>
-						<th>{{__('translate.payslip/ot')}}</th>
+						<th style="text-align:right">{{__('translate.payslip/service')}}</th>
+						<th style="text-align:right">{{__('translate.payslip/product')}}</th>
+						<th style="text-align:right">{{__('translate.payslip/ot')}}</th>
 					</tr>
 				</thead>
 				<tbody>
 					@foreach($sale_summary as $date => $summary)
 					<tr>
 						<td>{{$date}} ({{ date('D', strtotime($date)) }})</td>
-						<td>{{$summary['total_service']}}</td>
-						<td>{{$summary['total_product']}}</td>
-						<td>{{$summary['total_ot']}}</td>
+						<td style="text-align:right">{{$summary['total_service']}}</td>
+						<td style="text-align:right">{{$summary['total_product']}}</td>
+						<td style="text-align:right">{{$summary['total_ot']}}</td>
 					</tr>
 					@endforeach
 				</tbody>

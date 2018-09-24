@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'All Sales Report')
+@section('title', __('translate.pagetitle/all-sales'))
 @section('content')
 
 	<div class="panel">
@@ -94,9 +94,9 @@
 	<div class="panel">
 		<div class="panel-heading">
 			<div class="row">
-				<span class="panel-title"><i class="panel-title-icon fa fa-list-ul"></i>All Sales Listing</span>
+				<span class="panel-title"><i class="panel-title-icon fa fa-list-ul"></i>{{__('translate.listing/all-sales')}}</span>
 				@if($search)
-					<span class="pull-right">{{ __('translate.message/record-found', ['number' => count($sales)])}}   <a href="{{ route('report.all-sales') }}">{{ __('translate.button/clear') }}</a></span>
+					<span class="pull-right">{{ __('translate.message/record-found', ['number' => count($sales)])}}&nbsp;<a href="javascript:history.back()">{{ __('translate.button/clear') }}</a></span>
 				@endif
 			</div>
 		</div>
@@ -105,11 +105,12 @@
 				<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="all-sales-datatables">
 					<thead>
 						<tr>
-							<th>ID</th>
-							<th>Username</th>
-							<th>Sales</th>
-							<th>Amount</th>
-							<th>Date</th>
+							<th>{{__('translate.field/id')}}</th>
+							<th>{{__('translate.field/username')}}</th>
+							<th>{{__('translate.field/sales')}}</th>
+							<th>{{__('translate.field/amount')}}</th>
+							<th>{{__('translate.field/commission')}}</th>
+							<th>{{__('translate.field/date')}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -121,21 +122,28 @@
 									@for($i = 0, $serviceArr = json_decode($sale->service), $length = count($serviceArr); $i < $length; $i++)
 										{{ $services[$serviceArr[$i]] }}
 										<span style="color: #ccc">&nbsp;|&nbsp;</span>
-										<!-- @if ($i < $length -1)
-										@endif -->
 									@endfor
 									@for($i = 0, $productArr = json_decode($sale->product), $length = count($productArr); $i < $length; $i++)
 										{{ $products[$productArr[$i]] }}
 										<span style="color: #ccc">&nbsp;|&nbsp;</span>
-										<!-- @if ($i < $length -1)
-										@endif -->
 									@endfor
 								</td>
 								<td>{{ $sale->amount }}</td>
+								<td>{{ $sale->comm }}</td>
 								<td>{{ $sale->cdate }}</td>
 							</tr>
 						@endforeach
 					</tbody>
+					<tfoot>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th style="text-align:right"></th>
+							<th></th>
+							<th></th>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
@@ -154,7 +162,42 @@
 					format:'yyyy-mm-dd',
 				});
 
-				$('#all-sales-datatables').dataTable();
+				$('#all-sales-datatables').dataTable({
+					"order": [[ 5, "desc" ]],
+					"footerCallback": function ( row, data, start, end, display ) {
+						var api = this.api(), data;
+ 
+						// Remove the formatting to get integer data for summation
+						var intVal = function ( i ) {
+							return typeof i === 'string' 
+									? i.replace(/<[^>]*>/g, '')
+									: typeof i === 'number'
+										? i 
+										: 0;
+						};
+			
+						// Total over all pages
+						amountTotal = api
+							.column( 3 )
+							.data()
+							.reduce( function (a, b) {
+								return parseFloat(intVal(a)) + parseFloat(intVal(b));
+							}, 0 );
+			
+						// Total over this page
+						amountPageTotal = api
+							.column( 3, { page: 'current'} )
+							.data()
+							.reduce( function (a, b) {
+								return parseFloat(intVal(a)) + parseFloat(intVal(b));
+							}, 0 );
+						
+						// Update footer
+						$( api.column( 3 ).footer() ).html(
+							'Total : RM ' + amountPageTotal +' (RM '+ amountTotal +' ALL)'
+						);
+					}
+				});
 				$('#all-sales-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
 			});
 		</script>

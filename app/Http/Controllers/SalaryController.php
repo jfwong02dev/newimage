@@ -401,6 +401,8 @@ class SalaryController extends Controller
             $sale_summary[$date]['total_ot'] = $daily_ot[$date] ?? 0;
         }
 
+        // dd(array_sum(array_column($sale_summary, 'total_service')) + array_sum(array_column($sale_summary, 'total_product')));
+
         return view('payslips.show', [
             'subject_types' => Salary::$subject_type_to_code,
             'user' => $user,

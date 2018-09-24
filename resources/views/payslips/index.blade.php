@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Payslip Generator')
+@section('title', __('translate.pagetitle/payslip-generator'))
 @section('content')
 	@if($errors->all())
 		@foreach($errors->all() as $error)
@@ -10,13 +10,13 @@
 		<div class="col-sm-12">
 			<div class="panel">
 				<div class="panel-heading">
-					<span class="panel-title">Payslip</span>
+					<span class="panel-title">{{__('translate.pagetitle/payslip-generator')}}</span>
 				</div>
 				<div class="panel-body">
 					<form action="{{route('payslips.show')}}" method="post" class="form-horizontal">
 					@csrf
 						<div class="form-group{{ $errors->has('uid') ? ' has-error' : '' }}">
-							<label for="uid" class="col-sm-3 control-label">Username</label>
+							<label for="uid" class="col-sm-3 control-label">{{__('translate.field/username')}}</label>
 							<div class="col-sm-9">
 								<select class="form-control" name="uid" id="uid">
 									<option></option>
@@ -31,7 +31,7 @@
 						</div>
 
 						<div class="form-group{{ $errors->has('month') ? ' has-error' : '' }}">
-							<label for="month" class="col-sm-3 control-label">Month</label>
+							<label for="month" class="col-sm-3 control-label">{{__('translate.field/month')}}</label>
 							<div class="col-sm-9">
 								<div id="month-select">
 								<select class="form-control" name="month" id="month">
@@ -49,7 +49,7 @@
 							<div class="col-sm-9">
 								<div class="checkbox" style="margin: 0;">
 									<label>
-										<input type="checkbox" name="epf_socso" checked> EPF & Socso
+										<input type="checkbox" name="epf_socso" checked> {{__('translate.field/epf_socso')}}
 									</label>
 								</div> <!-- / .checkbox -->
 							</div>
@@ -57,7 +57,7 @@
 
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-primary">Generate</button>
+								<button type="submit" class="btn btn-primary">{{__('translate.button/generate')}}</button>
 							</div>
 						</div>
 					</form>
@@ -79,7 +79,7 @@
 				
 				var individual_months = $.parseJSON('<?php echo json_encode($individual_months); ?>');
 				var selected_uid = '<?php echo old('uid') ?? $faker['uid'] ?? ''; ?>';
-
+				
 				if(typeof(individual_months[selected_uid]) != 'undefined') {
 					display_month_options(selected_uid);
 				}

@@ -19,6 +19,9 @@
 	<link href="{{ asset('css/rtl.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('css/themes.min.css') }}" rel="stylesheet" type="text/css">
 
+    <!-- favicon -->
+    <link rel="shortcut icon" href="{{ asset('j-icon.png') }}">
+
 	<!--[if lt IE 9]>
 		<script src="assets/javascripts/ie.min.js"></script>
 	<![endif]-->
@@ -51,6 +54,7 @@
                 <input type="hidden" name="sale_summary" value="{{ json_encode($sale_summary) }}"/>
                 <input type="hidden" name="date" value="{{ json_encode($date) }}"/>
 			</form>
+            <a href="{{route('payslips.index')}}" class="pull-right btn btn-primary" style="display: block; margin-left: 10px"><i class="fa fa-reply"></i>&nbsp;&nbsp;{{__('translate.button/back')}}</a>
             <a href="#" id="print-btn" class="pull-right btn btn-primary" style="display: block;"><i class="fa fa-print"></i>&nbsp;&nbsp;{{__('translate.button/print')}}</a>
 		</div> <!-- / .page-header -->
 		
@@ -205,18 +209,18 @@
 					<thead>
 						<tr>
 							<th>{{__('translate.payslip/date')}}</th>
-							<th>{{__('translate.payslip/service')}}</th>
-							<th>{{__('translate.payslip/product')}}</th>
-							<th>{{__('translate.payslip/ot')}}</th>
+							<th style="text-align:right">{{__('translate.payslip/service')}}</th>
+							<th style="text-align:right">{{__('translate.payslip/product')}}</th>
+							<th style="text-align:right">{{__('translate.payslip/ot')}}</th>
 						</tr>
 					</thead>
 					<tbody>
                         @foreach($sale_summary as $date => $summary)
 						<tr>
 							<td>{{$date}} ({{ date('D', strtotime($date)) }})</td>
-							<td>{{$summary['total_service']}}</td>
-							<td>{{$summary['total_product']}}</td>
-							<td>{{$summary['total_ot']}}</td>
+							<td style="text-align:right">{{$summary['total_service']}}</td>
+							<td style="text-align:right">{{$summary['total_product']}}</td>
+							<td style="text-align:right">{{$summary['total_ot']}}</td>
                         </tr>
                         @endforeach
 					</tbody>

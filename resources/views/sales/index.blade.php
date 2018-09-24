@@ -188,6 +188,17 @@
 							</tr>
 						@endforeach
 					</tbody>
+					<tfoot>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th style="text-align:right"></th>
+							<th></th>
+							<th></th>
+							<th></th>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
@@ -197,7 +208,42 @@
 		
 		<script>
 			init.push(function () {
-				$('#sales-datatables').dataTable();
+				$('#sales-datatables').dataTable({
+					"order": [[ 5, "desc" ]],
+					"footerCallback": function ( row, data, start, end, display ) {
+						var api = this.api(), data;
+ 
+						// Remove the formatting to get integer data for summation
+						var intVal = function ( i ) {
+							return typeof i === 'string' 
+									? i.replace(/<[^>]*>/g, '')
+									: typeof i === 'number'
+										? i 
+										: 0;
+						};
+			
+						// Total over all pages
+						amountTotal = api
+							.column( 3 )
+							.data()
+							.reduce( function (a, b) {
+								return parseFloat(intVal(a)) + parseFloat(intVal(b));
+							}, 0 );
+			
+						// Total over this page
+						amountPageTotal = api
+							.column( 3, { page: 'current'} )
+							.data()
+							.reduce( function (a, b) {
+								return parseFloat(intVal(a)) + parseFloat(intVal(b));
+							}, 0 );
+						
+						// Update footer
+						$( api.column( 3 ).footer() ).html(
+							'Total : RM ' + amountPageTotal +' (RM '+ amountTotal +' ALL)'
+						);
+					}
+				});
 				$('#sales-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
 
 				$('#sales-datatables').on('click', '[name=delete-form]', function () {

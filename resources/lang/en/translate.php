@@ -48,6 +48,7 @@ return [
 	'pagetitle/add-amendments' => 'Add Salary Amendments',
 	'pagetitle/salary-voucher' => 'Salary Voucher',
 	'pagetitle/payslip' => 'Payslip',
+	'pagetitle/payslip-generator' => 'Payslip Generator',
 	'pagetitle/all-sales' => 'All Sales',
 	'pagetitle/new-service' => 'New Service',
 	'pagetitle/service' => 'Services',
@@ -61,6 +62,8 @@ return [
 	'pagetitle/new-user' => 'New User',
 	'pagetitle/user' => 'User',
 	'pagetitle/sales-summary' => 'Sales Summary',
+	'pagetitle/monthly-sales' => 'Monthly Sales',
+	'pagetitle/yearly-sales' => 'Yearly Sales',
 	
 	
 	// Listing
@@ -71,6 +74,8 @@ return [
 	'listing/product' => 'Product Listing',
 	'listing/sales-summary' => 'Sales Summary',
 	'listing/salary-amendment' => 'Salary Amendments Listing',
+	'listing/monthly-sales' => 'Monthly Sale Listing',
+	'listing/yearly-sales' => 'Yearly Sale Listing',
 	
 	// Button
 	'button/new' => 'Create New',
@@ -91,6 +96,7 @@ return [
 	'button/show' => 'Show',
 	'button/hide' => 'Hide',
 	'button/print' => 'Print',
+	'button/back' => 'Back',
 	
 	// Field
 	'field/sales' => 'Sales',
@@ -163,6 +169,9 @@ return [
 	'field/unpaid' => "Unpaid",
 	'field/total-deduction' => "Total Deduction",
 	'field/total-contribution' => "Total Contribution",
+	'field/daterange-to' => "to",
+	'field/year' => "Year",
+	'field/epf_socso' => "EPF & SOCSO",
 
 	// Service
 	'field/service-name' => "Service Name",

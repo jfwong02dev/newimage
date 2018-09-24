@@ -162,7 +162,9 @@
 				$("#uid").select2();
 				$("#subject").select2();
 
-				$('#adjustment-datatables').dataTable();
+				$('#adjustment-datatables').dataTable({
+					"order": [[ 4, "desc" ]],
+				});
 				$('#adjustment-datatables_wrapper .dataTables_filter input').attr('placeholder', 'Search...');
 
 				$('#adjustment-datatables').on('click', '[name=delete-form]', function () {

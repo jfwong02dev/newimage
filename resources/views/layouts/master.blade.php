@@ -20,7 +20,7 @@
 	<link href="{{ asset('css/themes.min.css') }}" rel="stylesheet" type="text/css">
 
     <!-- favicon -->
-    <link rel="shortcut icon" href="{{{ asset('j-icon.png') }}}">
+    <link rel="shortcut icon" href="{{ asset('j-icon.png') }}">
 
 	<!--[if lt IE 9]>
 		<script src="assets/javascripts/ie.min.js"></script>
