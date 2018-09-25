@@ -2,6 +2,8 @@
 
 namespace App;
 
+use DB;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -23,5 +25,19 @@ class Sale extends Model
     public function user()
     {
         return $this->belongsTo('App\User', 'uid', 'uid')->withTrashed();
+    }
+
+    public function dailySale()
+    {
+        $daily_sales = DB::table('sales')
+            ->select(DB::raw("
+                cdate AS date,
+                SUM(COALESCE(amount, 0)) AS total
+                "))
+            ->whereNull('deleted_at')
+            ->groupBy('cdate')
+            ->get();
+
+        return $daily_sales;
     }
 }

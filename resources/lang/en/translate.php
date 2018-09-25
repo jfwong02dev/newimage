@@ -31,6 +31,7 @@ return [
 	'menu/management/payslip' => 'Payslip',
 	
 	// Page Title
+	'pagetitle/dashboard' => 'Dashboard',
 	'pagetitle/sales' => 'Sales',
 	'pagetitle/new-sales' => 'New Sales',
 	'pagetitle/add-sales' => 'Add Sales',

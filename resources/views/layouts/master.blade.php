@@ -18,6 +18,7 @@
 	<link href="{{ asset('css/pages.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('css/rtl.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('css/themes.min.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ asset('css/fullcalendar.css') }}" rel="stylesheet" type="text/css">
 
     <!-- favicon -->
     <link rel="shortcut icon" href="{{ asset('j-icon.png') }}">
@@ -60,10 +61,15 @@
     <script type="text/javascript"> window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js">'+"<"+"/script>"); </script>
     <![endif]-->
 
+    <!-- Full Calendar javascripts -->
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/fullcalendar.js') }}"></script>
 
     <!-- Pixel Admin's javascripts -->
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/pixel-admin.min.js') }}"></script>
+
 
     <!-- Javascripts -->
     @yield('script')
