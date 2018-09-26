@@ -174,7 +174,7 @@
 				});
 
 				function showPamount(services, products) {
-					if(services && products) {
+					if(services.length && products.length) {
 						$('#pamount-field').show();
 					}
 					else {

@@ -160,8 +160,9 @@
 								</td>
 								<td>{{ $sale->amount }}
 									@if($sale->pamount > 0)
-									<i class="fa fa-info-circle sales-details" data-toggle="tooltip" data-placement="right" title="{{__('translate.tooltip/sales-details', [
-										'service_amount' => $sale->amount - $sale->pamount ,
+									<i class="fa fa-info-circle sales-details" data-toggle="tooltip" data-html="true" data-placement="right" title="{{__('translate.tooltip/sales-details', [
+										'br' => '<br/>',
+										'service_amount' => $sale->amount - $sale->pamount,
 										'product_amount' => $sale->pamount
 									])}}"></i>
 									@endif

@@ -4,6 +4,7 @@ namespace App;
 
 use DB;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -39,5 +40,28 @@ class Sale extends Model
             ->get();
 
         return $daily_sales;
+    }
+
+    public function monthlyStatistic()
+    {
+        $date = Carbon::now();
+        $startOfYear = $date->copy()->startOfYear()->toDateString();
+        $endOfYear = $date->copy()->endOfYear()->toDateString();
+
+        $monthly_statistic = DB::table('sales')
+            ->select(DB::raw("
+                DATE_FORMAT(cdate, '%Y-%m-01') AS month, 
+                SUM(CASE WHEN service != '[]' AND product != '[]' THEN amount - pamount
+                    WHEN service != '[]' THEN amount ELSE 0 END) AS total_service,
+                SUM(CASE WHEN service != '[]' AND product != '[]' THEN pamount
+                    WHEN product != '[]' THEN amount ELSE 0 END) AS total_product
+            "))
+            ->whereBetween('cdate', [$startOfYear, $endOfYear])
+            ->whereNull('deleted_at')
+            ->groupBy(DB::raw("DATE_FORMAT(cdate, '%Y-%m-01')"))
+            ->get()
+            ->toArray();
+
+        return $monthly_statistic;
     }
 }

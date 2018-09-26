@@ -238,7 +238,7 @@ return [
 
 	// Notification
 	'notification/is-deleted-user' => ":username has been deleted from user.",
-	'tooltip/sales-details' => "Service: RM :service_amount, Product: RM :product_amount",
+	'tooltip/sales-details' => "Service: RM :service_amount :br Product: RM :product_amount",
 
 	// Payslip
 	'payslip/date' => "Date (Day)",
@@ -246,4 +246,8 @@ return [
 	'payslip/product' => "Product (RM)",
 	'payslip/ot' => "Over Time (RM)",
 	'payslip/total' => "TOTAL",
+
+	// Widget
+	'widget-title/monthly-sale' => "Monthly Sales Chart",
+	'widget-title/calendar' => "Daily Sales",
 ];

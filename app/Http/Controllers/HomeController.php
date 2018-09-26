@@ -9,6 +9,8 @@ use App\Product;
 use App\Salary;
 use App\Sale;
 
+use Carbon\Carbon;
+
 class HomeController extends Controller
 {
     protected $_all_users;
@@ -55,7 +57,23 @@ class HomeController extends Controller
     {
         $sales = new Sale();
         $sales_calendar = $sales->dailySale();
+        $monthly_statistic = $sales->monthlyStatistic();
         $daily_sales = [];
+        $daily_sales_by_month = [];
+        $lowest_of_month = [];
+        $highest_of_month = [];
+        $daily_sales_by_month = [];
+        $monthly_statistic_chart = [];
+
+        foreach ($sales_calendar as $record) {
+            $firstDayOfMonth = date('Y-m-01', strtotime($record->date));
+            $daily_sales_by_month[$firstDayOfMonth][$record->date] = $record->total;
+        }
+
+        foreach ($daily_sales_by_month as $month) {
+            $lowest_of_month = array_merge($lowest_of_month, array_keys($month, min($month)));
+            $highest_of_month = array_merge($highest_of_month, array_keys($month, max($month)));
+        }
 
         if (count($sales_calendar)) {
             foreach ($sales_calendar as $li => $record) {
@@ -64,8 +82,19 @@ class HomeController extends Controller
             }
         }
 
+        if (count($monthly_statistic)) {
+            foreach ($monthly_statistic as $record) {
+                $monthly_statistic_chart['month'][] = Carbon::parse($record->month)->format('M');
+                $monthly_statistic_chart['total_service'][] = $record->total_service;
+                $monthly_statistic_chart['total_product'][] = $record->total_product;
+            }
+        }
+
         return view('home', [
-            'daily_sales' => $daily_sales
+            'daily_sales' => $daily_sales,
+            'monthly_statistic_chart' => $monthly_statistic_chart,
+            'lowest_of_month' => $lowest_of_month,
+            'highest_of_month' => $highest_of_month,
         ]);
         // return view('home', [
         //     'no_of_all_users' => count($this->_all_users->toArray()),
