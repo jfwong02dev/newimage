@@ -58,7 +58,7 @@ class SaleController extends Controller
                     $date_range[] = $value;
                 } else if (in_array($key, ['service', 'product'])) {
                     foreach ($value as $code) {
-                        $sales->where($key, 'like', '%' . $code . '%');
+                        $sales->where($key, 'LIKE', '%"' . $code . '"%');
                     }
                 } else if (is_array($value)) {
                     $sales->whereIn($key, $value);
