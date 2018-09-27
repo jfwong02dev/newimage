@@ -16,8 +16,8 @@ class CreateSalesTable extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('uid');
-            $table->string('service')->nullable();
-            $table->string('product')->nullable();
+            $table->text('service')->nullable();
+            $table->text('product')->nullable();
             $table->double('amount', 8, 2);
             $table->double('pamount', 8, 2);
             $table->integer('comm');

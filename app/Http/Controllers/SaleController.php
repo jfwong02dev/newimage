@@ -106,10 +106,22 @@ class SaleController extends Controller
         $faker = Faker::create();
         $comm_types = Sale::$comm_types;
 
+        $service_code_to_name = [];
+        foreach ($this->_all_services as $service) {
+            $service_code_to_name[$service->code] = $service->name;
+        }
+
+        $product_code_to_name = [];
+        foreach ($this->_all_products as $product) {
+            $product_code_to_name[$product->code] = $product->name;
+        }
+
         return view('sales.create', [
             'users' => $this->_users,
             'services' => $this->_available_services,
             'products' => $this->_available_products,
+            'service_code_to_name' => $service_code_to_name,
+            'product_code_to_name' => $product_code_to_name,
             'comm_types' => $comm_types,
             'faker' => [
                 // 'uid' => $faker->randomElement(array_column($this->_users->toArray(), 'uid')),
@@ -131,10 +143,19 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->has('bulkService') && $request->bulkService !== null) {
+            $request->merge(['service' => explode(',', $request->bulkService)]);
+        }
+        if ($request->has('bulkProduct') && $request->bulkProduct !== null) {
+            $request->merge(['product' => explode(',', $request->bulkProduct)]);
+        }
+
         $extra_rules = [];
         if ($request->service && $request->product) {
             $extra_rules['pamount'] = 'required|numeric|min:1';
-            $extra_rules['amount'] = 'required|numeric|gt:pamount';
+            if ($request->pamount) {
+                $extra_rules['amount'] = 'required|numeric|gt:pamount';
+            }
         }
 
         $this->validate($request, array_merge([
@@ -186,11 +207,23 @@ class SaleController extends Controller
      */
     public function edit(Sale $sale)
     {
+        $service_code_to_name = [];
+        foreach ($this->_all_services as $service) {
+            $service_code_to_name[$service->code] = $service->name;
+        }
+
+        $product_code_to_name = [];
+        foreach ($this->_all_products as $product) {
+            $product_code_to_name[$product->code] = $product->name;
+        }
+
         return view('sales.edit', [
             'sale' => $sale,
             'users' => $this->_users,
             'services' => $this->_available_services,
             'products' => $this->_available_products,
+            'service_code_to_name' => $service_code_to_name,
+            'product_code_to_name' => $product_code_to_name,
             'comm_types' => Sale::$comm_types,
         ]);
     }
@@ -204,22 +237,34 @@ class SaleController extends Controller
      */
     public function update(Request $request, Sale $sale)
     {
+        if ($request->has('bulkService') && $request->bulkService !== null) {
+            $request->merge(['service' => explode(',', $request->bulkService)]);
+        }
+        if ($request->has('bulkProduct') && $request->bulkProduct !== null) {
+            $request->merge(['product' => explode(',', $request->bulkProduct)]);
+        }
+
         $extra_rules = [];
         if ($request->service && $request->product) {
             $extra_rules['pamount'] = 'required|numeric|min:1';
-            $extra_rules['amount'] = 'required|numeric|gt:pamount';
+            if ($request->pamount) {
+                $extra_rules['amount'] = 'required|numeric|gt:pamount';
+            }
         }
-
-        $this->validate($request, array_merge([
-            'uid' => 'required|in:' . implode(',', $this->_userIDs),
-            'service' => 'required_without:product|array',
-            'service.*' => 'required|string|in:' . implode(',', array_column($this->_available_services->toArray(), 'code')),
-            'product' => 'required_without:service|array',
-            'product>*' => 'required|string|in:' . implode(',', array_column($this->_available_products->toArray(), 'code')),
-            'comm' => 'required|in:' . implode(',', Sale::$comm_types),
-            'amount' => 'required|numeric|min:1',
-            'cdate' => 'required|date_format:Y-m-d',
-        ], $extra_rules));
+        try {
+            $this->validate($request, array_merge([
+                'uid' => 'required|in:' . implode(',', $this->_userIDs),
+                'service' => 'required_without:product|array',
+                'service.*' => 'required|string|in:' . implode(',', array_column($this->_available_services->toArray(), 'code')),
+                'product' => 'required_without:service|array',
+                'product>*' => 'required|string|in:' . implode(',', array_column($this->_available_products->toArray(), 'code')),
+                'comm' => 'required|in:' . implode(',', Sale::$comm_types),
+                'amount' => 'required|numeric|min:1',
+                'cdate' => 'required|date_format:Y-m-d',
+            ], $extra_rules));
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
 
         $sale->uid = $request->uid;
         $sale->service = json_encode($request->service ?? []);
