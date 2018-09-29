@@ -145,18 +145,38 @@
 								<td>{{ $sale->id }}</td>
 								<td>{{ $sale->user->username }}</td>
 								<td>
-									@for($i = 0, $serviceArr = json_decode($sale->service), $length = count($serviceArr); $i < $length; $i++)
-										{{ $services[$serviceArr[$i]] }}
-										<span style="color: #ccc">&nbsp;|&nbsp;</span>
-										<!-- @if ($i < $length -1)
-										@endif -->
-									@endfor
-									@for($i = 0, $productArr = json_decode($sale->product), $length = count($productArr); $i < $length; $i++)
-										{{ $products[$productArr[$i]] }}
-										<span style="color: #ccc">&nbsp;|&nbsp;</span>
-										<!-- @if ($i < $length -1)
-										@endif -->
-									@endfor
+									<?php $sum_of_sale = 0; ?>
+									<?php $sum_of_each_service = []; ?>
+									<?php $serviceArr = json_decode($sale->service); ?>
+										@foreach($serviceArr as $scode)
+											@if(!in_array($scode, array_keys($sum_of_each_service)))
+												<?php $sum_of_each_service[$scode] = 1; ?>
+											@else
+												<?php $sum_of_each_service[$scode] += 1; ?>
+											@endif
+										@endforeach
+										<?php $sum_of_sale += array_sum($sum_of_each_service); ?>
+										@foreach($sum_of_each_service as $scode => $sum)
+											{{ $services[$scode] }}
+											<span class="label label-primary">{{ $sum }}</span>
+											<span style="color: #ccc">&nbsp;|&nbsp;</span>
+										@endforeach
+									<?php $sum_of_each_product = []; ?>
+									<?php $productArr = json_decode($sale->product); ?>
+										@foreach($productArr as $pcode)
+											@if(!in_array($pcode, array_keys($sum_of_each_product)))
+												<?php $sum_of_each_product[$pcode] = 1; ?>
+											@else
+												<?php $sum_of_each_product[$pcode] += 1; ?>
+											@endif
+										@endforeach
+										<?php $sum_of_sale += array_sum($sum_of_each_product); ?>
+										@foreach($sum_of_each_product as $pcode => $sum)
+											{{ $products[$pcode] }} 
+											<span class="label label-info">{{ $sum }}</span>
+											<span style="color: #ccc">&nbsp;|&nbsp;</span>
+										@endforeach
+										<span class="label label-pa-purple">{{ $sum_of_sale }}</span>
 								</td>
 								<td>{{ $sale->amount }}
 									@if($sale->pamount > 0)
