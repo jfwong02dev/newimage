@@ -144,32 +144,49 @@
 								<td>{{ $sale->id }}</td>
 								<td>{{ $sale->user->username }}</td>
 								<td>
-									<?php $sum_of_sale = 0; ?>
-									<?php $sum_of_each_service = []; ?>
-									<?php $serviceArr = json_decode($sale->service); ?>
-										@foreach($serviceArr as $scode)
-											@if(!in_array($scode, array_keys($sum_of_each_service)))
-												<?php $sum_of_each_service[$scode] = 1; ?>
-											@else
-												<?php $sum_of_each_service[$scode] += 1; ?>
-											@endif
-										@endforeach
-										<?php $sum_of_sale += array_sum($sum_of_each_service); ?>
+									@php
+										$sum_of_sale = 0;
+										$sum_of_each_service = [];
+										$serviceArr = json_decode($sale->service);
+									@endphp
+									@foreach($serviceArr as $scode)
+										@if(!in_array($scode, array_keys($sum_of_each_service)))
+											@php
+												$sum_of_each_service[$scode] = 1;
+											@endphp
+										@else
+											@php
+												$sum_of_each_service[$scode] += 1;
+											@endphp
+										@endif
+									@endforeach
+									@php
+										$sum_of_sale += array_sum($sum_of_each_service);
+									@endphp
 										@foreach($sum_of_each_service as $scode => $sum)
 											{{ $services[$scode] }}
 											<span class="label label-primary">{{ $sum }}</span>
 											<span style="color: #ccc">&nbsp;|&nbsp;</span>
 										@endforeach
-									<?php $sum_of_each_product = []; ?>
-									<?php $productArr = json_decode($sale->product); ?>
+
+									@php
+										$sum_of_each_product = [];
+										$productArr = json_decode($sale->product);
+									@endphp
 										@foreach($productArr as $pcode)
 											@if(!in_array($pcode, array_keys($sum_of_each_product)))
-												<?php $sum_of_each_product[$pcode] = 1; ?>
+												@php
+													$sum_of_each_product[$pcode] = 1;
+												@endphp
 											@else
-												<?php $sum_of_each_product[$pcode] += 1; ?>
+												@php
+													$sum_of_each_product[$pcode] += 1;
+												@endphp
 											@endif
 										@endforeach
-										<?php $sum_of_sale += array_sum($sum_of_each_product); ?>
+									@php
+										$sum_of_sale += array_sum($sum_of_each_product);
+									@endphp
 										@foreach($sum_of_each_product as $pcode => $sum)
 											{{ $products[$pcode] }} 
 											<span class="label label-info">{{ $sum }}</span>
@@ -296,6 +313,10 @@
 					});
 				});
 
+				$('#sales-datatables').on('draw.dt', function () {
+					$('.sales-details').tooltip();	
+				});
+				
 				$('.sales-details').tooltip();
 				$("#uid").select2();
 				$("#service").select2();

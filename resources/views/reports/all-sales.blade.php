@@ -76,7 +76,7 @@
 					<div class="col-sm-9">
 						<div class="input-daterange input-group" id="bs-datepicker-range">
 							<input type="text" class="input-sm form-control" name="from_date" value="{{ old('from_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/start-date') }}" >
-							<span class="input-group-addon">to</span>
+							<span class="input-group-addon">{{__('translate.field/daterange-to')}}</span>
 							<input type="text" class="input-sm form-control" name="to_date" value="{{ old('to_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/end-date') }}" >
 						</div>
 					</div>
@@ -118,32 +118,49 @@
 								<td>{{ $sale->id }}</td>
 								<td>{{ $sale->user->username }}</td>
 								<td>
-									<?php $sum_of_sale = 0; ?>
-									<?php $sum_of_each_service = []; ?>
-									<?php $serviceArr = json_decode($sale->service); ?>
-										@foreach($serviceArr as $scode)
-											@if(!in_array($scode, array_keys($sum_of_each_service)))
-												<?php $sum_of_each_service[$scode] = 1; ?>
-											@else
-												<?php $sum_of_each_service[$scode] += 1; ?>
-											@endif
-										@endforeach
-										<?php $sum_of_sale += array_sum($sum_of_each_service); ?>
+									@php
+										$sum_of_sale = 0;
+										$sum_of_each_service = [];
+										$serviceArr = json_decode($sale->service);
+									@endphp
+									@foreach($serviceArr as $scode)
+										@if(!in_array($scode, array_keys($sum_of_each_service)))
+											@php
+												$sum_of_each_service[$scode] = 1;
+											@endphp
+										@else
+											@php
+												$sum_of_each_service[$scode] += 1;
+											@endphp
+										@endif
+									@endforeach
+									@php
+										$sum_of_sale += array_sum($sum_of_each_service);
+									@endphp
 										@foreach($sum_of_each_service as $scode => $sum)
 											{{ $services[$scode] }}
 											<span class="label label-primary">{{ $sum }}</span>
 											<span style="color: #ccc">&nbsp;|&nbsp;</span>
 										@endforeach
-									<?php $sum_of_each_product = []; ?>
-									<?php $productArr = json_decode($sale->product); ?>
+
+									@php
+										$sum_of_each_product = [];
+										$productArr = json_decode($sale->product);
+									@endphp
 										@foreach($productArr as $pcode)
 											@if(!in_array($pcode, array_keys($sum_of_each_product)))
-												<?php $sum_of_each_product[$pcode] = 1; ?>
+												@php
+													$sum_of_each_product[$pcode] = 1;
+												@endphp
 											@else
-												<?php $sum_of_each_product[$pcode] += 1; ?>
+												@php
+													$sum_of_each_product[$pcode] += 1;
+												@endphp
 											@endif
 										@endforeach
-										<?php $sum_of_sale += array_sum($sum_of_each_product); ?>
+									@php
+										$sum_of_sale += array_sum($sum_of_each_product);
+									@endphp
 										@foreach($sum_of_each_product as $pcode => $sum)
 											{{ $products[$pcode] }} 
 											<span class="label label-info">{{ $sum }}</span>
@@ -151,7 +168,15 @@
 										@endforeach
 										<span class="label label-pa-purple">{{ $sum_of_sale }}</span>
 								</td>
-								<td>{{ $sale->amount }}</td>
+								<td>{{ $sale->amount }}
+									@if($sale->pamount > 0)
+									<i class="fa fa-info-circle sales-details" data-toggle="tooltip" data-html="true" data-placement="right" title="{{__('translate.tooltip/sales-details', [
+										'br' => '<br/>',
+										'service_amount' => $sale->amount - $sale->pamount,
+										'product_amount' => $sale->pamount
+									])}}"></i>
+									@endif
+								</td>
 								<td>{{ $sale->comm }}</td>
 								<td>{{ $sale->cdate }}</td>
 							</tr>
@@ -179,6 +204,12 @@
 				$("#uid").select2();
 				$("#service").select2();
 				$("#product").select2();
+
+				$('#all-sales-datatables').on('draw.dt', function () {
+					$('.sales-details').tooltip();	
+				});
+				
+				$('.sales-details').tooltip();
 
 				$('#bs-datepicker-range').datepicker({
 					todayBtn:'linked',
