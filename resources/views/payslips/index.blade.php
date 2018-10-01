@@ -49,7 +49,7 @@
 							<div class="col-sm-9">
 								<div class="checkbox" style="margin: 0;">
 									<label>
-										<input type="checkbox" name="epf_socso" checked> {{__('translate.field/epf_socso')}}
+										<input type="checkbox" class="px" name="epf_socso" checked><span class="lbl">{{__('translate.field/epf_socso')}}</span>
 									</label>
 								</div> <!-- / .checkbox -->
 							</div>

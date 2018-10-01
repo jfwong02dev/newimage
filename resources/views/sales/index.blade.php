@@ -62,12 +62,11 @@
 					<label class="col-sm-3 control-label">{{ __('translate.field/commission') }}</label>
 					<div class="col-sm-9">
 						<div class="checkbox" style="margin: 0;">
+							@foreach($glob_comm as $comm)
 							<label>
-								<input type="checkbox" name="comm[]" value="10" {{in_array(10, old('comm') ?? []) ? 'checked' : ''}}> 10
+								<input type="checkbox" class="px" name="comm[]" value="{{$comm}}" {{in_array($comm, old('comm') ?? []) ? 'checked' : ''}}><span class="lbl">{{ $comm }}</span>
 							</label>
-							<label>
-								<input type="checkbox" name="comm[]" value="20" {{in_array(20, old('comm') ?? []) ? 'checked' : ''}}> 20
-							</label>
+							@endforeach
 						</div> <!-- / .checkbox -->
 					</div>
 				</div>
@@ -76,7 +75,7 @@
 					<div class="col-sm-9">
 						<div class="input-daterange input-group" id="bs-datepicker-range">
 							<input type="text" class="input-sm form-control" name="from_date" value="{{ old('from_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/start-date') }}">
-							<span class="input-group-addon">to</span>
+							<span class="input-group-addon">{{__('translate.field/daterange-to')}}</span>
 							<input type="text" class="input-sm form-control" name="to_date" value="{{ old('to_date') ?? '' }}" autocomplete="off" placeholder="{{ __('translate.placeholder/end-date') }}">
 						</div>
 					</div>
