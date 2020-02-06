@@ -354,14 +354,18 @@ class SalaryController extends Controller
             }
         }
 
-        if ($request->has('epf_socso')) {
+        if ($request->has('make_epf')) {
             $epf_employer = $user->salary * (Salary::$epf_percent['employer'] / 100);
             $epf_employee = $user->salary * (Salary::$epf_percent['employee'] / 100);
+        } else {
+            $epf_employer = $epf_employee = 0;
+        }
 
+        if ($request->has('make_socso')) {
             $socso_employer = Salary::$socso['employer'];
             $socso_employee = Salary::$socso['employee'];
         } else {
-            $epf_employer = $epf_employee = $socso_employer = $socso_employee = 0;
+            $socso_employer = $socso_employee = 0;
         }
 
         $total_addition += $comm->service_comm + $comm->product_comm;

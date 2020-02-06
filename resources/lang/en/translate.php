@@ -2,7 +2,7 @@
 
 return [
 
-    /*
+	/*
     |--------------------------------------------------------------------------
     | Translate Language Lines
     |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return [
 	'menu/management/product' => 'Product',
 	'menu/management/adjustment' => 'Salary Amendments',
 	'menu/management/payslip' => 'Payslip',
-	
+
 	// Page Title
 	'pagetitle/dashboard' => 'Dashboard',
 	'pagetitle/sales' => 'Sales',
@@ -65,8 +65,8 @@ return [
 	'pagetitle/sales-summary' => 'Sales Summary',
 	'pagetitle/monthly-sales' => 'Monthly Sales',
 	'pagetitle/yearly-sales' => 'Yearly Sales',
-	
-	
+
+
 	// Listing
 	'listing/all-sales' => 'All Sales Listing',
 	'listing/sales' => 'Sales Listing',
@@ -77,7 +77,7 @@ return [
 	'listing/salary-amendment' => 'Salary Amendments Listing',
 	'listing/monthly-sales' => 'Monthly Sale Listing',
 	'listing/yearly-sales' => 'Yearly Sale Listing',
-	
+
 	// Button
 	'button/new' => 'Create New',
 	'button/sales' => 'Create Sales',
@@ -98,7 +98,7 @@ return [
 	'button/hide' => 'Hide',
 	'button/print' => 'Print',
 	'button/back' => 'Back',
-	
+
 	// Field
 	'field/sales' => 'Sales',
 	'field/credit' => 'Credit',
@@ -173,12 +173,14 @@ return [
 	'field/daterange-to' => "to",
 	'field/year' => "Year",
 	'field/epf_socso' => "EPF & SOCSO",
+	'field/make_epf' => "Make EPF",
+	'field/make_socso' => "Make SOCSO",
 
 	// Service
 	'field/service-name' => "Service Name",
 	'field/product-name' => "Product Name",
 	'field/status' => "Status",
-	
+
 	// Position
 	'position/director' => "Director",
 	'position/assistant' => "Assistant",
@@ -188,7 +190,7 @@ return [
 	// Gender
 	'gender/male' => "Male",
 	'gender/female' => "Female",
-	
+
 	// Amendments Subject
 	'amendment-subject/bonus' => "Bonus",
 	'amendment-subject/ot' => "Over Time",
@@ -199,14 +201,14 @@ return [
 
 	'amendment-type/c' => "Credit",
 	'amendment-type/d' => "Debit",
-	
+
 	// Error
 	'error/not-allow-create-s&p-once' => 'Not allow to create sales of both service and product at once.',
 	'error/s&p-must-either-one' => 'Service and Product must select either one.',
 	'error/general-error' => 'There is some error in the process. Error Message : :err_msg',
 	'error/unknown-error' => ':error_code : There is unknown error.',
 	'error/update-error' => 'There is some error for updating.',
-	
+
 	// Message
 	'message/success' => 'Success',
 	'message/success-added-sales' => 'The sales has been added successfully.',
