@@ -87,6 +87,8 @@ class Salary extends Model
         'employee' => 4.2,
     ];
 
+    public static $comm_percent = [10, 20];
+
     public function user()
     {
         return $this->belongsTo('App\User', 'uid', 'uid')->withTrashed();
