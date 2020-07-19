@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <!--[if IE 8]>         <html class="ie8"> <![endif]-->
 <!--[if IE 9]>         <html class="ie9 gt-ie8"> <![endif]-->
-<!--[if gt IE 9]><!--> <html class="gt-ie8 gt-ie9 not-ie"> <!--<![endif]-->
+<!--[if gt IE 9]><!-->
+<html class="gt-ie8 gt-ie9 not-ie">
+<!--<![endif]-->
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -18,15 +21,15 @@
 	<link href="{{ asset('css/rtl.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('css/themes.min.css') }}" rel="stylesheet" type="text/css">
 
-    <!-- favicon -->
-    <link rel="shortcut icon" href="{{{ asset('j-icon.png') }}}">
+	<!-- favicon -->
+	<link rel="shortcut icon" href="{{{ asset('j-icon.png') }}}">
 
 	<!--[if lt IE 9]>
 		<script src="assets/javascripts/ie.min.js"></script>
 	<![endif]-->
 
 
-<!-- $DEMO =========================================================================================
+	<!-- $DEMO =========================================================================================
 
 	Remove this section on production
 -->
@@ -36,12 +39,20 @@
 			right: 0;
 			bottom: 0;
 			z-index: 10000;
-			background: rgba(0,0,0,.6);
+			background: rgba(0, 0, 0, .6);
 			padding: 6px;
 			border-radius: 3px;
 		}
-		#signin-demo img { cursor: pointer; height: 40px; }
-		#signin-demo img:hover { opacity: .5; }
+
+		#signin-demo img {
+			cursor: pointer;
+			height: 40px;
+		}
+
+		#signin-demo img:hover {
+			opacity: .5;
+		}
+
 		#signin-demo div {
 			color: #fff;
 			font-size: 10px;
@@ -49,7 +60,7 @@
 			padding-bottom: 6px;
 		}
 	</style>
-<!-- / $DEMO -->
+	<!-- / $DEMO -->
 
 </head>
 
@@ -62,6 +73,7 @@
 	* 'theme-{THEME NAME}'
 	* 'right-to-left'     - Sets text direction to right-to-left
 -->
+
 <body class="theme-default page-signin" data-session="{{ session('status') ?? $errors->has('email') ?? '' }}">
 
 	<!-- Page background -->
@@ -98,8 +110,8 @@
 		<div class="signin-form">
 
 			<!-- Form -->
-            <form method="POST" action="{{ route('login') }}"  id="signin-form_id" aria-label="{{ __('Login') }}">
-                @csrf
+			<form method="POST" action="{{ route('login') }}" id="signin-form_id" aria-label="{{ __('Login') }}">
+				@csrf
 				<div class="signin-text">
 					<span>Sign In to your account</span>
 				</div> <!-- / .signin-text -->
@@ -133,20 +145,20 @@
 				<!-- Form -->
 				<form method="POST" action="{{ route('password.email') }}" id="password-reset-form_id" aria-label="{{ __('Reset Password') }}">
 					@csrf
-					<div class="form-group w-icon{{ session('status') ? ' has-success' : $errors->has('email') ? ' has-error' : '' }}">
+					<div class="form-group w-icon{{ (session('status') ? ' has-success' : $errors->has('email')) ? ' has-error' : '' }}">
 						<input type="text" name="email" id="email" class="form-control input-lg" placeholder="Enter your email">
 						<span class="fa fa-envelope signin-form-icon"></span>
 					</div> <!-- / Email -->
 
 					@if (session('status'))
-						<div class="has-success simple">
-							<p class="help-block">{{ session('status') }}</p>
-						</div>
+					<div class="has-success simple">
+						<p class="help-block">{{ session('status') }}</p>
+					</div>
 					@elseif ($errors->has('email'))
-						<div class="has-error simple">
-							<p class="help-block">{{ $errors->first('email') }}</p>
-						</div>
-                    @endif
+					<div class="has-error simple">
+						<p class="help-block">{{ $errors->first('email') }}</p>
+					</div>
+					@endif
 
 					<div class="form-actions">
 						<input type="submit" value="SEND PASSWORD RESET LINK" class="signin-btn bg-primary">
@@ -160,87 +172,96 @@
 	</div>
 	<!-- / Container -->
 
-<!-- Get jQuery from Google CDN -->
-<!--[if !IE]> -->
-	<script type="text/javascript"> window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js">'+"<"+"/script>"); </script>
-<!-- <![endif]-->
-<!--[if lte IE 9]>
+	<!-- Get jQuery from Google CDN -->
+	<!--[if !IE]> -->
+	<script type="text/javascript">
+		window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js">' + "<" + "/script>");
+	</script>
+	<!-- <![endif]-->
+	<!--[if lte IE 9]>
 	<script type="text/javascript"> window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js">'+"<"+"/script>"); </script>
 <![endif]-->
 
 
-<!-- Pixel Admin's javascripts -->
-<script src="{{ asset('js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('js/pixel-admin.min.js') }}"></script>
+	<!-- Pixel Admin's javascripts -->
+	<script src="{{ asset('js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('js/pixel-admin.min.js') }}"></script>
 
-<script type="text/javascript">
-    var init=[];
+	<script type="text/javascript">
+		var init = [];
 
-	if(document.body.dataset.session) {
-		init.push(function () {
-			$('#password-reset-form').fadeIn(400);
-			return false;
-		});
-	}
+		if (document.body.dataset.session) {
+			init.push(function() {
+				$('#password-reset-form').fadeIn(400);
+				return false;
+			});
+		}
 
-	// Resize BG
-	init.push(function () {
-		var $ph  = $('#page-signin-bg'),
-		    $img = $ph.find('> img');
+		// Resize BG
+		init.push(function() {
+			var $ph = $('#page-signin-bg'),
+				$img = $ph.find('> img');
 
-		$(window).on('resize', function () {
-			$img.attr('style', '');
-			if ($img.height() < $ph.height()) {
-				$img.css({
-					height: '100%',
-					width: 'auto'
-				});
-			}
-		});
-	});
-
-	// Show/Hide password reset form on click
-	init.push(function () {
-		$('#forgot-password-link').click(function () {
-			$('#password-reset-form').fadeIn(400);
-			return false;
-		});
-		$('#password-reset-form .close').click(function () {
-			$('#password-reset-form').fadeOut(400);
-			return false;
-		});
-	});
-
-	// Setup Sign In form validation
-	init.push(function () {
-		$("#signin-form_id").validate({ focusInvalid: true, errorPlacement: function () {} });
-		
-		// Validate username
-		$("#username").rules("add", {
-			required: true,
-			minlength: 3
+			$(window).on('resize', function() {
+				$img.attr('style', '');
+				if ($img.height() < $ph.height()) {
+					$img.css({
+						height: '100%',
+						width: 'auto'
+					});
+				}
+			});
 		});
 
-		// Validate password
-		$("#password").rules("add", {
-			required: true,
-			minlength: 6
+		// Show/Hide password reset form on click
+		init.push(function() {
+			$('#forgot-password-link').click(function() {
+				$('#password-reset-form').fadeIn(400);
+				return false;
+			});
+			$('#password-reset-form .close').click(function() {
+				$('#password-reset-form').fadeOut(400);
+				return false;
+			});
 		});
-	});
 
-	// Setup Password Reset form validation
-	init.push(function () {
-		$("#password-reset-form_id").validate({ focusInvalid: true, errorPlacement: function () {} });
-		
-		// Validate email
-		$("#email").rules("add", {
-			required: true,
-			email: true
+		// Setup Sign In form validation
+		init.push(function() {
+			$("#signin-form_id").validate({
+				focusInvalid: true,
+				errorPlacement: function() {}
+			});
+
+			// Validate username
+			$("#username").rules("add", {
+				required: true,
+				minlength: 3
+			});
+
+			// Validate password
+			$("#password").rules("add", {
+				required: true,
+				minlength: 6
+			});
 		});
-	});
 
-	window.PixelAdmin.start(init);
-</script>
+		// Setup Password Reset form validation
+		init.push(function() {
+			$("#password-reset-form_id").validate({
+				focusInvalid: true,
+				errorPlacement: function() {}
+			});
+
+			// Validate email
+			$("#email").rules("add", {
+				required: true,
+				email: true
+			});
+		});
+
+		window.PixelAdmin.start(init);
+	</script>
 
 </body>
+
 </html>
