@@ -111,6 +111,32 @@ class ReportController extends Controller
         ]);
     }
 
+    public function saleCompare(Request $request)
+    {
+        $monthly_sales = DB::table('sales')
+            ->select(DB::raw("
+            DATE_FORMAT(cdate, '%Y-%m') AS month,
+            SUM(amount) AS total_sales
+            "))
+            ->whereNull('deleted_at')
+            ->groupBy(DB::raw("DATE_FORMAT(cdate, '%Y-%m')"))
+            ->orderBy(DB::raw("DATE_FORMAT(cdate, '%Y-%m')"))
+            ->get();
+
+        $all_months = [];
+        $sales_by_month = [];
+        foreach ($monthly_sales as $key => $value) {
+            $month = date("F Y", strtotime($value->month));
+            array_push($all_months, $month);
+            $sales_by_month[$month] = $value->total_sales;
+        }
+
+        return view('reports.sales-compare', [
+            'all_months' => $all_months,
+            'sales_by_month' => $sales_by_month,
+        ]);
+    }
+
     public function monthlySale()
     {
         $monthly_sales = DB::table('sales')
@@ -212,7 +238,7 @@ class ReportController extends Controller
         $path = explode('/', $uri);
 
         $whereq = [];
-        $search_fields = ['uid', 'service', 'product', 'comm', 'from_date', 'to_date'];
+        $search_fields = ['uid', 'service', 'product', 'comm', 'from_date', 'to_date', 'first_month', 'second_month'];
 
         foreach ($search_fields as $field) {
             if (isset($_POST[$field]) && !empty($_POST[$field])) {
@@ -227,6 +253,10 @@ class ReportController extends Controller
 
             case 'all-sales-report':
                 return $this->allSale($whereq);
+                break;
+
+            case 'sales-compare-report':
+                return $this->saleCompare($whereq);
                 break;
 
             default:

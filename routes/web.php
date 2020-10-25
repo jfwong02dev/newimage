@@ -40,6 +40,7 @@ Route::post('sales/{id}', 'SaleController@restore')->name('sales.restore')->midd
 
 Route::get('sales-details-report', 'ReportController@saleDetail')->name('report.sales-details')->middleware('auth');
 Route::post('sales-details-report/search', 'ReportController@search')->name('report.sales-details-search')->middleware('auth');
+Route::get('sales-compare-report', 'ReportController@saleCompare')->name('report.sales-compare')->middleware('auth');
 Route::get('monthly-sales-report', 'ReportController@monthlySale')->name('report.monthly-sales')->middleware('auth');
 Route::get('yearly-sales-report', 'ReportController@yearlySale')->name('report.yearly-sales')->middleware('auth');
 Route::get('all-sales-report', 'ReportController@allSale')->name('report.all-sales')->middleware('auth');

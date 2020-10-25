@@ -19,6 +19,7 @@ return [
 	'menu/sales' => 'Sales',
 	'menu/report' => 'Reports',
 	'menu/report/sales-details' => 'Sales Detail Report',
+	'menu/report/sales-compare' => 'Sales Compare Report',
 	'menu/report/monthly-sales' => 'Monthly Sales Report',
 	'menu/report/yearly-sales' => 'Yearly Sales Report',
 	'menu/report/all-sales' => 'All Sales Report',
@@ -63,6 +64,7 @@ return [
 	'pagetitle/new-user' => 'New User',
 	'pagetitle/user' => 'User',
 	'pagetitle/sales-summary' => 'Sales Summary',
+	'pagetitle/sales-compare' => 'Sales Compare',
 	'pagetitle/monthly-sales' => 'Monthly Sales',
 	'pagetitle/yearly-sales' => 'Yearly Sales',
 
@@ -74,6 +76,7 @@ return [
 	'listing/service' => 'Service Listing',
 	'listing/product' => 'Product Listing',
 	'listing/sales-summary' => 'Sales Summary',
+	'listing/sales-compare' => 'Sales Compare',
 	'listing/salary-amendment' => 'Salary Amendments Listing',
 	'listing/monthly-sales' => 'Monthly Sale Listing',
 	'listing/yearly-sales' => 'Yearly Sale Listing',
@@ -221,6 +224,8 @@ return [
 	// Placeholder
 	'placeholder/start-date' => 'Start Date',
 	'placeholder/end-date' => 'End Date',
+	'placeholder/first-month' => 'First Month',
+	'placeholder/second-month' => 'Second Month',
 	'placeholder/pamount' => 'Product Amount',
 	'placeholder/amount' => 'Amount',
 	'placeholder/service-name' => 'Service Name',
