@@ -356,7 +356,7 @@ class SalaryController extends Controller
 
         if ($request->has('make_epf')) {
             $epf_employer = $user->salary * (Salary::$epf_percent['employer'] / 100);
-            $epf_employee = $user->salary * (($user->uid == 10010 ? 11 : Salary::$epf_percent['employee']) / 100);
+            $epf_employee = $user->salary * (Salary::$epf_percent['employee'] / 100);
         } else {
             $epf_employer = $epf_employee = 0;
         }

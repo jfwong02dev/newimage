@@ -142,15 +142,16 @@
 
 			var mesg1 = '';
 			if (typeof(sales_by_month[first_month]) !== 'undefined') {
+				let temp_first = sales_by_month[first_month] - 0
 				mesg1 += '<table class="table table-bordered">';
 				mesg1 += '<tbody>';
 				mesg1 += '<tr>';
 				mesg1 += '<td>Sales</td>';
-				mesg1 += '<td>RM <span class="pull-right">' + Number(sales_by_month[first_month]).toFixed(2) + '</span></td>';
+				mesg1 += '<td>RM <span class="pull-right">' + Number(temp_first).toFixed(2) + '</span></td>';
 				mesg1 += '</tr>';
 				mesg1 += '<tr>';
 				mesg1 += '<td>Net Sales</td>';
-				mesg1 += '<td>RM <span class="pull-right">' + Number(sales_by_month[first_month]).toFixed(2) + '</span></td>';
+				mesg1 += '<td>RM <span class="pull-right">' + Number(temp_first).toFixed(2) + '</span></td>';
 				mesg1 += '</tr>';
 				mesg1 += '</tbody>';
 				mesg1 += '</table>';
@@ -158,19 +159,21 @@
 
 			var mesg2 = '';
 			if (typeof(sales_by_month[second_month]) !== 'undefined') {
+				let temp_second = sales_by_month[second_month] - 0
 				mesg2 += '<table class="table table-bordered">';
 				mesg2 += '<tbody>';
 				mesg2 += '<tr>';
 				mesg2 += '<td>Sales</td>';
-				mesg2 += '<td>RM <span class="pull-right">' + Number(sales_by_month[second_month]).toFixed(2) + '</span></td>';
+				mesg2 += '<td>RM <span class="pull-right">' + Number(temp_second).toFixed(2) + '</span></td>';
 				mesg2 += '</tr>';
 				mesg2 += '<tr>';
 				mesg2 += '<td>Net Sales</td>';
-				mesg2 += '<td>RM <span class="pull-right">' + Number(sales_by_month[second_month]).toFixed(2) + '</span></td>';
+				mesg2 += '<td>RM <span class="pull-right">' + Number(temp_second).toFixed(2) + '</span></td>';
 				mesg2 += '</tr>';
 
 				if (typeof sales_by_month[first_month] !== 'undefined') {
-					let variance = (sales_by_month[second_month] - sales_by_month[first_month]) / sales_by_month[first_month] * 100
+					let temp_first = sales_by_month[first_month] - 0
+					let variance = (temp_second - temp_first) / temp_first * 100
 
 					mesg2 += '<tr>';
 					mesg2 += '<td colspan="2"></td>';

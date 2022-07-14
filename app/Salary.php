@@ -79,7 +79,7 @@ class Salary extends Model
 
     public static $epf_percent = [
         'employer' => 13,
-        'employee' => 7,
+        'employee' => 11,
     ];
 
     public static $socso = [
