@@ -126,6 +126,10 @@
 									<td>RM <span class="pull-right">{{ number_format($socso_employee, 2) }}</span></td>
 								</tr>
 								<tr>
+									<td>{{ trans('translate.field/eis') }}</td>
+									<td>RM <span class="pull-right">{{ number_format($eis_employee, 2) }}</span></td>
+								</tr>
+								<tr>
 									<td>{{ trans('translate.field/advance-salary') }}</td>
 									<td>RM <span class="pull-right">{{ number_format($adjustments[$subject_types['d']['advance']] ?? 0, 2) }}</span></td>
 								</tr>
@@ -167,11 +171,15 @@
 									<td>RM <span class="pull-right">{{ number_format($socso_employer, 2) }}</span></td>
 								</tr>
 								<tr>
+									<td>{{ trans('translate.field/employer-eis') }}</td>
+									<td>RM <span class="pull-right">{{ number_format($eis_employer, 2) }}</span></td>
+								</tr>
+								<tr>
 									<td colspan="2"></td>
 								</tr>
 								<tr>
 									<td>{{ trans('translate.field/total-contribution') }}</td>
-									<td>RM <span class="pull-right">{{ number_format($epf_employer + $socso_employer, 2) }}</span></td>
+									<td>RM <span class="pull-right">{{ number_format($epf_employer + $socso_employer + $eis_employer, 2) }}</span></td>
 								</tr>
 							</tbody>
 						</table>

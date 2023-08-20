@@ -258,6 +258,8 @@ class SalaryController extends Controller
             'epf_employee' => json_decode($request->epf_employee),
             'socso_employer' => json_decode($request->socso_employer),
             'socso_employee' => json_decode($request->socso_employee),
+            'eis_employer' => json_decode($request->eis_employer),
+            'eis_employee' => json_decode($request->eis_employee),
             'total_addition' => json_decode($request->total_addition),
             'total_deduction' => json_decode($request->total_deduction),
             'gross_pay' => json_decode($request->gross_pay),
@@ -362,14 +364,33 @@ class SalaryController extends Controller
         }
 
         if ($request->has('make_socso')) {
-            $socso_employer = Salary::$socso['employer'];
-            $socso_employee = Salary::$socso['employee'];
+            $target_wage = $user->salary;
+            $index = -1; // Initialize index to -1, indicating wage not found
+
+            // Loop through the $wages_up_to array to find the index
+            for ($i = 0; $i < count(Salary::$contribution_wages_up_to); $i++) {
+                if (Salary::$contribution_wages_up_to[$i] >= $target_wage) {
+                    $index = $i; // Update the index if the wage is found
+                    break; // Exit the loop since we found the index
+                }
+            }
+
+            if ($index !== -1) {
+                // Get the values at the found index in the other arrays
+                $socso_employer = Salary::$socso_employer[$index];
+                $socso_employee = Salary::$socso_employee[$index];
+                $eis_employer = $eis_employee = Salary::$eis_for_both[$index];
+            } else {
+                $socso_employer = $socso_employee = 0;
+                $eis_employer = $eis_employee = 0;
+            }
         } else {
             $socso_employer = $socso_employee = 0;
+            $eis_employer = $eis_employee = 0;
         }
 
         $total_addition += $comm->service_comm + $comm->product_comm;
-        $total_deduction += $epf_employee + $socso_employee;
+        $total_deduction += $epf_employee + $socso_employee + $eis_employee;
 
         $gross_pay = $user->salary + $total_addition;
         $net_total = $gross_pay - $total_deduction;
@@ -415,6 +436,8 @@ class SalaryController extends Controller
             'epf_employee' => $epf_employee,
             'socso_employer' => $socso_employer,
             'socso_employee' => $socso_employee,
+            'eis_employer' => $eis_employer,
+            'eis_employee' => $eis_employee,
             'total_addition' => $total_addition,
             'total_deduction' => $total_deduction,
             'gross_pay' => $gross_pay,
